@@ -386,26 +386,17 @@ def main():
 
 ## PiTFT (uncomment) 
         if not(GPIO.input(23)):
-            print "button #1"
-            setupObjects()
-            draw_cols = True
-            draw_menu = True
+	    buttonpress = 1
+	    time.sleep(0.5)
         if not(GPIO.input(22)):
-            print "button #2"
-            setupSky()
-            draw_cols = True
-            draw_menu = False
+            buttonpress = 2
+            time.sleep(0.5)
         if not(GPIO.input(27)):
-            print "button #3"
-            setupWeather()
-            draw_cols = True
-            draw_menu = False        
+            buttonpress = 3
+            time.sleep(0.5)
         if not(GPIO.input(18)):
-            print "button #4"
-            draw_menu = True        
-            pygame.quit()
-            exit()
-
+            buttonpress = 4
+            time.sleep(0.5)
 
 ##        debug code to see button press events
 ##        text = font.render(str(buttonpress), 0, (0,250,150))
