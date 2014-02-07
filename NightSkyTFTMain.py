@@ -125,7 +125,19 @@ def dispDetails():
 
 def dispSky():
 
-
+    blue_shades = [ (255,255,255),
+                    (220,240,250),
+                    (200,218,245),
+                    (150,180,240),
+                    (130,170,230),
+                    (80,130,200),
+                    (60,110,190),
+                    (30,80,160),
+                    (20,60,140),
+                    (0,40,110)
+                    ]
+                    
+                    
     cloud_d = {}
     transp_d = {}
     seeing_d = {}
@@ -191,27 +203,28 @@ def dispSky():
               if ( datestruct.tm_hour == 6):   
                   break
 
-    y = 38 + 3*16
+    y = 38 + 3*16 - 8
     xinc = 20
     yinc = 16
     for row in ( "clouds","transp","seeing" ):
         x = 0
         row_label = font.render( row, True, (255,255,255))
         screen.blit(row_label, (x,y-8))
-        x = 65
+        x = 65 - 6
         for hr in (17,18,19,20,21,22,23,0,1,2,3,4,5):
 
-            shade = 0
-            if row == "cloud":
-                shade = int(cloud_d[hr])*255/10
+            shade = (0,0,0)
+            if row == "clouds":
+                shade = blue_shades[ int(cloud_d[hr])-1]
             elif row == "transp":
-                shade = int(transp_d[hr])*255/10
+                shade = blue_shades[ int(transp_d[hr])-1]
             elif row == "seeing":
-                shade = int(seeing_d[hr])*255/10
-
-            print "x, y, shade =", x, y, shade
+                shade = blue_shades[ int(seeing_d[hr])-1]
                 
-            pygame.draw.circle(screen, (shade,shade,255), (x,y), 6 )
+            # print "x, y, shade =", x, y, shade
+
+            box = pygame.Rect(x,y-8,18,14)                
+            pygame.draw.rect(screen, shade, box )
 
             x = x + xinc
         y = y + yinc 
@@ -347,9 +360,9 @@ def dispObjs():
                       datetime.timedelta(days=1,hours=hr)
             if ( calc_status( rise_tm_d[ objs ], set_tm_d[ objs ], \
                               clck_tm) == "on" ):
-                 pygame.draw.circle(screen, (255,0,0), (x,y), 6 )
+                 pygame.draw.circle(screen, (255,0,0), (x,y), 8 )
             else:
-                pygame.draw.circle(screen, (50,50,50), (x,y), 6 )
+                pygame.draw.circle(screen, (50,50,50), (x,y), 8 )
             x = x + xinc
         y = y + yinc 
 
