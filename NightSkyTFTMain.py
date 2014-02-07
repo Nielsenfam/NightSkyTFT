@@ -9,6 +9,8 @@ import ephem
 import pytz
 import datetime
 
+import urllib2
+
 import params
 
 ## if running on RPi with a PiTFT
@@ -123,10 +125,97 @@ def dispDetails():
 
 def dispSky():
 
+
+    cloud_d = {}
+    transp_d = {}
+    seeing_d = {}
+
     title_txt = "Sky"
     dispTitle(title_txt)
 
     dispHourCols()
+
+    # Get the html page from www.cleardarksky.com
+    url  = params.clear_dark_sky_url
+
+    # Get the data in text version
+
+    req = urllib2.Request(url)
+    response = urllib2.urlopen(req)
+    data = response.read()
+    data = data.split("blocks = (\n")
+    data_table = data[1].splitlines()
+
+    # current date
+    now = datetime.date.today()
+
+    # tomorrows date
+    tomorrow = now + datetime.timedelta(days=1)
+
+    # loop over rows
+    for line in data_table:
+        if ( line[0:1] != "#" ):
+            cols = line.split(",")
+
+            datestring1 = cols[0].split("\"")[1]
+            datestruct = time.strptime(datestring1,'%Y-%m-%d %H:%M:%S')
+
+            # if today and 5PM or later
+            if (datestruct.tm_year == now.year and 
+                datestruct.tm_mon == now.month and
+                datestruct.tm_mday == now.day ):
+
+                if ( datestruct.tm_hour > (16) ):   
+                    print "todays hour, cloud, transp, seeing: ", \
+                          datestruct.tm_hour, cols[1], cols[2], cols[3]
+                    cloud_d[datestruct.tm_hour] = cols[1]
+                    transp_d[datestruct.tm_hour] = cols[2]
+                    seeing_d[datestruct.tm_hour] = cols[3]
+
+            # if tomorrow and before 5AM
+            if (datestruct.tm_year == tomorrow.year and 
+              datestruct.tm_mon == tomorrow.month and
+              datestruct.tm_mday == tomorrow.day ): 
+
+                if ( datestruct.tm_hour < 6):   
+                    print "tomorrows hour, cloud, transp, seeing: ", \
+                        datestruct.tm_hour, cols[1], cols[2], cols[3]
+                    cloud_d[datestruct.tm_hour] = cols[1]
+                    transp_d[datestruct.tm_hour] = cols[2]
+                    seeing_d[datestruct.tm_hour] = cols[3]
+
+            # if we got to 5AM tomorrow we are done
+            if (datestruct.tm_year == tomorrow.year and 
+              datestruct.tm_mon == tomorrow.month and
+              datestruct.tm_mday == tomorrow.day ): 
+              if ( datestruct.tm_hour == 6):   
+                  break
+
+    y = 38 + 3*16
+    xinc = 20
+    yinc = 16
+    for row in ( "clouds","transp","seeing" ):
+        x = 0
+        row_label = font.render( row, True, (255,255,255))
+        screen.blit(row_label, (x,y-8))
+        x = 65
+        for hr in (17,18,19,20,21,22,23,0,1,2,3,4,5):
+
+            shade = 0
+            if row == "cloud":
+                shade = int(cloud_d[hr])*255/10
+            elif row == "transp":
+                shade = int(transp_d[hr])*255/10
+            elif row == "seeing":
+                shade = int(seeing_d[hr])*255/10
+
+            print "x, y, shade =", x, y, shade
+                
+            pygame.draw.circle(screen, (shade,shade,255), (x,y), 6 )
+
+            x = x + xinc
+        y = y + yinc 
+
 
 def dispWeather():
 
