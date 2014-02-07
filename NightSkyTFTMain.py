@@ -16,7 +16,7 @@ import params
 
 
 ## PiTFT: (uncomment) 
-import RPi.GPIO as GPIO
+##import RPi.GPIO as GPIO
 
 
 def calc_status( rise_tm, set_tm, clocktm ):
@@ -166,10 +166,9 @@ def dispObjs():
     clock_end_hr = params.end_hr
 
 
-    # dictonary for rise, set times and row string
+    # dictonary for rise, set times
     set_tm_d = {}
     rise_tm_d = {}
-    row_string_d = {}
 
     # use time of 4PM today for all calculations so that it always gets next rise and set times for this evening
 
@@ -235,16 +234,35 @@ def dispObjs():
     rise_tm_d[ "saturn" ] = saturn_r
     set_tm_d[ "saturn" ] = saturn_s
 
-    print "sun r,s:", sun_r, sun_s
-    print "moon r,s:", moon_r, moon_s
-    print "venus r,s:", venus_r, venus_s 
-    print "mars r,s:", mars_r, mars_s
-    print "jupiter_r,s:", jupiter_r, jupiter_s
-    print "saturn_r,s:", saturn_r, saturn_s
+    ## print "sun r,s:", sun_r, sun_s
+    ## print "moon r,s:", moon_r, moon_s
+    ## print "venus r,s:", venus_r, venus_s 
+    ## print "mars r,s:", mars_r, mars_s
+    ## print "jupiter_r,s:", jupiter_r, jupiter_s
+    ## print "saturn_r,s:", saturn_r, saturn_s
 
-
-    
-
+    y = 38 + 3*16
+    xinc = 20
+    yinc = 16
+    for objs in ( "sun","moon","venus","mars","jupiter","saturn" ):
+        x = 0
+        obj_label = font.render( objs, True, (255,255,255))
+        screen.blit(obj_label, (x,y-8))
+        x = 65
+        for hr in (17,18,19,20,21,22,23,0,1,2,3,4,5):
+            if (hr > 16 ):
+                clck_tm = datetime.datetime(now.year,now.month,now.day) + \
+                      datetime.timedelta(hours=hr)
+            else:
+                clck_tm = datetime.datetime(now.year,now.month,now.day) + \
+                      datetime.timedelta(days=1,hours=hr)
+            if ( calc_status( rise_tm_d[ objs ], set_tm_d[ objs ], \
+                              clck_tm) == "on" ):
+                 pygame.draw.circle(screen, (255,0,0), (x,y), 6 )
+            else:
+                pygame.draw.circle(screen, (50,50,50), (x,y), 6 )
+            x = x + xinc
+        y = y + yinc 
 
 def dispTime():
 
@@ -278,11 +296,11 @@ def dispMenu(options):
 def main():
 
 ## PiTFT: (uncomment)
-    GPIO.setmode(GPIO.BCM)
-    GPIO.setup(23, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-    GPIO.setup(22, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-    GPIO.setup(27, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-    GPIO.setup(18, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+##    GPIO.setmode(GPIO.BCM)
+##    GPIO.setup(23, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+##    GPIO.setup(22, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+##    GPIO.setup(27, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+##    GPIO.setup(18, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
     global background, screen, font, text_lines
 
@@ -364,7 +382,7 @@ def main():
 
         
 
-## PiTFT (comment)        
+        ## Get keyboard events        
         buttonpress = 0
         for event in pygame.event.get():
             if event.type == QUIT:
@@ -385,18 +403,18 @@ def main():
                     buttonpress = 4
 
 ## PiTFT (uncomment) 
-        if not(GPIO.input(23)):
-	    buttonpress = 1
-	    time.sleep(0.5)
-        if not(GPIO.input(22)):
-            buttonpress = 2
-            time.sleep(0.5)
-        if not(GPIO.input(27)):
-            buttonpress = 3
-            time.sleep(0.5)
-        if not(GPIO.input(18)):
-            buttonpress = 4
-            time.sleep(0.5)
+##        if not(GPIO.input(23)):
+##	    buttonpress = 1
+##	    time.sleep(0.5)
+##        if not(GPIO.input(22)):
+##            buttonpress = 2
+##            time.sleep(0.5)
+##        if not(GPIO.input(27)):
+##            buttonpress = 3
+##            time.sleep(0.5)
+##        if not(GPIO.input(18)):
+##            buttonpress = 4
+##            time.sleep(0.5)
 
 ##        debug code to see button press events
 ##        text = font.render(str(buttonpress), 0, (0,250,150))
