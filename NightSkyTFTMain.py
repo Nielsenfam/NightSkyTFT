@@ -154,106 +154,113 @@ def dispDetails():
 #   based upon clear dark sky chart 
 #
 def dispSky():
-                                                               
-    cloud_d = {}
-    transp_d = {}
-    seeing_d = {}
-    wind_d = {}
-    humidity_d = {}
-    temp_d = {}
-                    
+
+    global cloud_d, transp_d, seeing_d, wind_d, humidity_d, temp_d, skyrefresh
 
     title_txt = "Sky"
     dispTitle(title_txt)
 
     dispHourCols()
 
-    # Get the html page from www.cleardarksky.com
-    url  = params.clear_dark_sky_url
-
-    # Get the data in text version
-
-    try: req = urllib2.Request(url)
-    except:
-        print "failed to request url: ", url
-        fail_font = pygame.font.SysFont(None, 32)
-        fail_surface = fail_font.render("No Sky Data Available", \
-                                        True, (255,0,0))
-        fail_rect = fail_surface.get_rect()
-        x = background.get_rect().centerx - fail_rect.width/2
-        y = background.get_rect().centery
-        screen.blit(fail_surface, (x,y) )
-
-        return
+    # if it has been more than a certain # of mins since last refresh do it
+    if (time.time() - skyrefresh) > (params.sky_refresh_rate * 60): 
         
-    try: response = urllib2.urlopen(req)
-    except:
-        print "failed to open url: ", url
-        fail_font = pygame.font.SysFont(None, 32)
-        fail_surface = fail_font.render("No Sky Data Available", \
-                                        True, (255,0,0))
-        fail_rect = fail_surface.get_rect()
-        x = background.get_rect().centerx - fail_rect.width/2
-        y = background.get_rect().centery
-        screen.blit(fail_surface, (x,y) )
+        cloud_d = {}
+        transp_d = {}
+        seeing_d = {}
+        wind_d = {}
+        humidity_d = {}
+        temp_d = {}
 
-        return
-        
-    data = response.read()
-    data = data.split("blocks = (\n")
-    data_table = data[1].splitlines()
+        # Get the html page from www.cleardarksky.com
+        url  = params.clear_dark_sky_url
 
-    # current date
-    now = datetime.date.today()
+        # Get the data in text version
 
-    # tomorrows date
-    tomorrow = now + datetime.timedelta(days=1)
+        try: req = urllib2.Request(url)
+        except:
+            print "failed to request url: ", url
+            fail_font = pygame.font.SysFont(None, 32)
+            fail_surface = fail_font.render("No Sky Data Available", \
+                                            True, (255,0,0))
+            fail_rect = fail_surface.get_rect()
+            x = background.get_rect().centerx - fail_rect.width/2
+            y = background.get_rect().centery
+            screen.blit(fail_surface, (x,y) )
 
-    # loop over rows
-    for line in data_table:
-        if ( line[0:1] != "#" ):
-            cols = line.split(",")
+            return
+            
+        try: response = urllib2.urlopen(req)
+        except:
+            print "failed to open url: ", url
+            fail_font = pygame.font.SysFont(None, 32)
+            fail_surface = fail_font.render("No Sky Data Available", \
+                                            True, (255,0,0))
+            fail_rect = fail_surface.get_rect()
+            x = background.get_rect().centerx - fail_rect.width/2
+            y = background.get_rect().centery
+            screen.blit(fail_surface, (x,y) )
 
-            datestring1 = cols[0].split("\"")[1]
-            datestruct = time.strptime(datestring1,'%Y-%m-%d %H:%M:%S')
+            return
+            
+        data = response.read()
+        data = data.split("blocks = (\n")
+        data_table = data[1].splitlines()
 
-            # if today and 5PM or later
-            if (datestruct.tm_year == now.year and 
-                datestruct.tm_mon == now.month and
-                datestruct.tm_mday == now.day ):
+        # current date
+        now = datetime.date.today()
 
-                if ( datestruct.tm_hour > (16) ):   
-                    # print "todays hour, cloud, transp, seeing, wind, hum, temp : ", \
-                    #      datestruct.tm_hour, cols[1], cols[2], cols[3], \
-                    #      cols[4], cols[5], cols[6]
-                    cloud_d[datestruct.tm_hour] = cols[1]
-                    transp_d[datestruct.tm_hour] = cols[2]
-                    seeing_d[datestruct.tm_hour] = cols[3]
-                    wind_d[datestruct.tm_hour] = cols[4]
-                    humidity_d[datestruct.tm_hour] = cols[5]
-                    temp_d[datestruct.tm_hour] = cols[6]
+        # tomorrows date
+        tomorrow = now + datetime.timedelta(days=1)
 
-            # if tomorrow and before 5AM
-            if (datestruct.tm_year == tomorrow.year and 
-              datestruct.tm_mon == tomorrow.month and
-              datestruct.tm_mday == tomorrow.day ): 
+        # loop over rows
+        for line in data_table:
+            if ( line[0:1] != "#" ):
+                cols = line.split(",")
 
-                if ( datestruct.tm_hour < 6):   
-                    # print "tomorrows hour, cloud, transp, seeing: ", \
-                    #    datestruct.tm_hour, cols[1], cols[2], cols[3]
-                    cloud_d[datestruct.tm_hour] = cols[1]
-                    transp_d[datestruct.tm_hour] = cols[2]
-                    seeing_d[datestruct.tm_hour] = cols[3]
-                    wind_d[datestruct.tm_hour] = cols[4]
-                    humidity_d[datestruct.tm_hour] = cols[5]
-                    temp_d[datestruct.tm_hour] = cols[6]
+                datestring1 = cols[0].split("\"")[1]
+                datestruct = time.strptime(datestring1,'%Y-%m-%d %H:%M:%S')
 
-            # if we got to 5AM tomorrow we are done
-            if (datestruct.tm_year == tomorrow.year and 
-              datestruct.tm_mon == tomorrow.month and
-              datestruct.tm_mday == tomorrow.day ): 
-              if ( datestruct.tm_hour == 6):   
-                  break
+                # if today and 5PM or later
+                if (datestruct.tm_year == now.year and 
+                    datestruct.tm_mon == now.month and
+                    datestruct.tm_mday == now.day ):
+
+                    if ( datestruct.tm_hour > (16) ):   
+                        # print "todays hour, cloud, transp, seeing, wind, hum, temp : ", \
+                        #      datestruct.tm_hour, cols[1], cols[2], cols[3], \
+                        #      cols[4], cols[5], cols[6]
+                        cloud_d[datestruct.tm_hour] = cols[1]
+                        transp_d[datestruct.tm_hour] = cols[2]
+                        seeing_d[datestruct.tm_hour] = cols[3]
+                        wind_d[datestruct.tm_hour] = cols[4]
+                        humidity_d[datestruct.tm_hour] = cols[5]
+                        temp_d[datestruct.tm_hour] = cols[6]
+
+                # if tomorrow and before 5AM
+                if (datestruct.tm_year == tomorrow.year and 
+                  datestruct.tm_mon == tomorrow.month and
+                  datestruct.tm_mday == tomorrow.day ): 
+
+                    if ( datestruct.tm_hour < 6):   
+                        # print "tomorrows hour, cloud, transp, seeing: ", \
+                        #    datestruct.tm_hour, cols[1], cols[2], cols[3]
+                        cloud_d[datestruct.tm_hour] = cols[1]
+                        transp_d[datestruct.tm_hour] = cols[2]
+                        seeing_d[datestruct.tm_hour] = cols[3]
+                        wind_d[datestruct.tm_hour] = cols[4]
+                        humidity_d[datestruct.tm_hour] = cols[5]
+                        temp_d[datestruct.tm_hour] = cols[6]
+
+                # if we got to 5AM tomorrow we are done
+                if (datestruct.tm_year == tomorrow.year and 
+                  datestruct.tm_mon == tomorrow.month and
+                  datestruct.tm_mday == tomorrow.day ): 
+                  if ( datestruct.tm_hour == 6):   
+                      break
+                    
+        skyrefresh = time.time()
+        print "refreshing sky data at:", skyrefresh
 
     y = 38 + 3*16 - 8
     xinc = 20
@@ -301,49 +308,58 @@ def dispWeather():
     title_txt = "Current Weather"
     dispTitle(title_txt)
 
-    url = params.wug_url_base + params.wug_key + \
-                        params.wug_conditions + params.wug_location
-    try: f = urllib2.urlopen(url)
-    except:
-        print "failed to request url: ", url
-        fail_font = pygame.font.SysFont(None, 32)
-        fail_surface = fail_font.render("No Weather Data Available", \
-                                        True, (255,0,0))
-        fail_rect = fail_surface.get_rect()
-        x = background.get_rect().centerx - fail_rect.width/2
-        y = background.get_rect().centery
-        screen.blit(fail_surface, (x,y) )
-        return        
+    global location, temp_f, wind_dir, wind_mph, dewpoint
+    global visibility, weather, icon_url, weather_refresh
 
-    json_string = f.read()
-    parsed_json = json.loads(json_string)
-
-    if 'current_observation' in parsed_json:
-        observation = parsed_json['current_observation']
-    else:
-        print "no observation data at url: ", url
-        fail_font = pygame.font.SysFont(None, 32)
-        fail_surface = fail_font.render("No Weather Data Found", \
-                                        True, (255,0,0))
-        fail_rect = fail_surface.get_rect()
-        x = background.get_rect().centerx - fail_rect.width/2
-        y = background.get_rect().centery
-        screen.blit(fail_surface, (x,y) )
-        return        
+    # if it has been more than a certain # of mins since last refresh do it
+    if (time.time() - weather_refresh) > (params.weather_refresh_rate * 60):
         
-    location = observation['display_location']['city']
-    temp_f = observation['temp_f']
-    wind_dir = observation['wind_dir']
-    wind_mph = observation['wind_mph']
-    dewpoint = observation['dewpoint_f']
-    visibility = observation['visibility_mi']
-    weather = observation['weather']
-    icon_url = observation['icon_url']
+        url = params.wug_url_base + params.wug_key + \
+                            params.wug_conditions + params.wug_location
+        try: f = urllib2.urlopen(url)
+        except:
+            print "failed to request url: ", url
+            fail_font = pygame.font.SysFont(None, 32)
+            fail_surface = fail_font.render("No Weather Data Available", \
+                                            True, (255,0,0))
+            fail_rect = fail_surface.get_rect()
+            x = background.get_rect().centerx - fail_rect.width/2
+            y = background.get_rect().centery
+            screen.blit(fail_surface, (x,y) )
+            return        
 
-    # print location, weather
-    # print "temp and wind:", temp_f, wind_dir, wind_mph
-    # print "dewpoint and visability", dewpoint, visibility
-    # print "icon", icon_url
+        json_string = f.read()
+        parsed_json = json.loads(json_string)
+
+        if 'current_observation' in parsed_json:
+            observation = parsed_json['current_observation']
+        else:
+            print "no observation data at url: ", url
+            fail_font = pygame.font.SysFont(None, 32)
+            fail_surface = fail_font.render("No Weather Data Found", \
+                                            True, (255,0,0))
+            fail_rect = fail_surface.get_rect()
+            x = background.get_rect().centerx - fail_rect.width/2
+            y = background.get_rect().centery
+            screen.blit(fail_surface, (x,y) )
+            return        
+            
+        location = observation['display_location']['city']
+        temp_f = observation['temp_f']
+        wind_dir = observation['wind_dir']
+        wind_mph = observation['wind_mph']
+        dewpoint = observation['dewpoint_f']
+        visibility = observation['visibility_mi']
+        weather = observation['weather']
+        icon_url = observation['icon_url']
+
+        # print location, weather
+        # print "temp and wind:", temp_f, wind_dir, wind_mph
+        # print "dewpoint and visability", dewpoint, visibility
+        # print "icon", icon_url
+
+        weather_refresh = time.time()
+        print "refreshing weather data at:", weather_refresh
 
     bg_rect = background.get_rect()
 
@@ -631,6 +647,15 @@ def main():
 
     global background, screen, font
 
+    global cloud_d, transp_d, seeing_d, wind_d, humidity_d, temp_d, skyrefresh
+
+    skyrefresh = 0
+
+    global location, temp_f, wind_dir, wind_mph, dewpoint
+    global visibility, weather, icon_url, weather_refresh
+
+    weather_refresh = 0
+
     background_image_filename = 'constellation-320px.png'
     splash_image_filename = 'Yellow_Sky.png'
 
@@ -691,15 +716,15 @@ def main():
     screen.blit(splash_surface, (x,y) )
 
     pygame.display.update()
-    time.sleep(3)
+    time.sleep(params.splash_delay)
 
     background = pygame.image.load(background_image_filename).convert()
 
     lastpage = ""
-    displaypage = "Menu"
+    displaypage = params.start_page
     quit_confirm = False
     cycle_confirm = False
-    cycle_flag = False
+    cycle_flag = params.start_cycling
     cycle_min = -1
 
 

@@ -50,6 +50,20 @@ PiTFT = True
 # End of mandatory configuration data
 #
 
+#
+# Refresh rate for sky and weather data (in minutes)
+#
+sky_refresh_rate = 60
+weather_refresh_rate = 60
+
+# Splash screen delay
+splash_delay = 5
+
+# Set to True to start cycling on startup
+start_cycling = True
+
+# Startup page (can be "Menu", "Objs", "Weather", "Sky", or "Details") 
+start_page = "Objs"
 
 #  Weather underground URL info
 #
