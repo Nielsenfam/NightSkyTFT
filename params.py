@@ -1,58 +1,156 @@
 #
-# Parameter file for Night Sky Orb
+# Parameter file for Night Sky TFT
 #   Edit parameters to match location
 #
 
 # Location lattitude and longitude of observation location:
-lat = 46.4186
-lon = -93.5153
+#
+# lat = *
+# lon = *
+#
+lat = 45
+lon = -90
 
 # Elevation in meters of observation location:
+#
+# alt = *
+#
 alt = 100
 
 # Timezone of observation location:
 tz = 'US/Central'
 
-# Starting and Ending hour of clock (must be 8 hour span for 1 matrix)
-start_hr = 19
-end_hr = 3
-
-# URL of ClearDarkSky map for closest observation point with predefined map
 #
-#  Use Long Lake Conservation Center in Minnesota
+# URL of ClearDarkSky text data for closest observation point
+#  
+# clear_dark_sky_url = "http://www.cleardarksky.com/txtc/*.txt"
 #
-clear_dark_sky_url = "http://www.cleardarksky.com/txtc/LngLkCCMNcsp.txt"
-
-# Definition of "Good Sky"
-#    Cloud Coverage: 9 = less than 10%
-#                    8 = less than 20%
-#                    7 = less than 30%
-#                    6 = less than 40%
-#                    5 = less than 50%
-#                    4 = less than 60%
-#                    3 = less than 70%
-#                    2 = less than 80%
-#                    1 = less than 90%
-#
-cloud_min = 7
+clear_dark_sky_url = "http://www.cleardarksky.com/txtc/*.txt"
 
 #
-#    Transparancy: 
-#                  4 = perfect transparancy 
-#                  3 = better than average
-#                  2 = average or better transparancy
-#                  1 = poor transparancy or better
+# name of weather underground location page
 #
-transparancy_min = 2
+# wug_location = "/q/ST/City.json"
+#
+wug_location = "/q/ST/City.json"
 
 #
-#   Seeing:
-#                  4 = Perfect Seeing
-#                  3 = better than average
-#                  2 = average or better seeing
-#                  1 = poor seeing or better
-seeing_min = 2
+# key for weather underground access
+#
+# wug_key = "*"
+wug_key = "*"
+
+#
+# End of mandatory configuration data
+#
+
+
+#  Weather underground URL info
+#
+wug_url_base = "http://api.wunderground.com/api/"
+wug_conditions = "/conditions"
 
 # URL of NASA website to parse for Two Line Element Set of ISS
 nasa_url = "http://spaceflight.nasa.gov/realdata/sightings/SSapplications/Post/JavaSSOP/orbit/ISS/SVPOST.html"
 
+#
+# Colors for clear dark sky display
+#
+cloud_shades = [ (251,251,251),  ## Overcast
+                (234,234,234),   ## 90% Covered
+                (194,194,194),   ## 80% Covered
+                (174,238,248),   ## 70% Covered
+                (154,218,218),   ## 60% Covered
+                (119,183,247),   ## 50% Covered
+                ( 99,163,227),   ## 40% Covered
+                ( 79,143,207),   ## 30% Covered
+                ( 39,103,167),   ## 20% Covered
+                ( 19, 83,147),   ## 10% Covered
+                ( 00, 63,127)    ## Clear
+                ]
+
+transp_shades = [ (249,249,249), ## Too cloudy to forecast
+                  (199,199,199), ## Poor
+                  (149,213,213), ## Below Average
+                  ( 99,163,227), ## Average
+                  ( 44,108,172), ## Above Average
+                  (  0, 63,127)  ## Transparent
+                ]
+
+
+seeing_shades = [ (249,249,249), ## Too cloudy to forecast
+                  (199,199,199), ## Bad
+                  (149,213,213), ## Poor
+                  ( 99,163,227), ## Average
+                  ( 44,108,172), ## Good
+                  (  0, 63,127)  ## Excellent
+                ]
+
+# not used a the moment
+darkness_shades = [ (255,255,255),
+               (250,242,212),
+                (243,225,155),
+                (222,198,104),
+                (214,180,43),
+                (176,141,0),
+                (0,238,255),
+                (0,178,191),
+                (0,110,255),
+                (0,100,212),
+                (0,88,200),
+                (0,68,186),
+                (0,55,150),
+                (0,45,122),
+                (0,37,99),
+                (0,28,77),
+                (0,0,0)                        
+                ]
+
+wind_shades = [   (249,249,249), ##    > 45 mph
+                  (199,199,199), ## 29 - 45 mph
+                  (149,213,213), ## 17 - 28 mph
+                  ( 99,163,227), ## 12 - 16 mph
+                  ( 44,108,172), ##  6 - 11 mph
+                  (  0, 63,127)  ##  0 -  5 mph
+              ]
+
+
+# need to align with official colors                
+humidity_shades = [ (62,26,120),
+                    (78,111,242),
+                    (128,162,232),
+                    (122,184,222),
+                    (109,190,237),
+                    (47,234,237),
+                    (7,240,186),
+                    (125,240,148),
+                    (212,255,0),
+                    (240,182,22),
+                    (230,117,69),
+                    (240,182,22),
+                    (230,117,69),
+                    (230,96,69),
+                    (227,57,23),
+                    (255,0,0)
+                ]
+
+temp_shades = [     (252,  0,252),  ##     < -40
+                    (  0,  0,113),  ## -40 - -31
+                    (  0,  0,178),  ## -30 - -21
+                    (  0,  0,136),  ## -21 - -12
+                    (  0, 52,254),  ## -12 -  -3
+                    (  0,137,254),  ##  -3 -   5
+                    (  0,212,254),  ##   5 -  14
+                    ( 30,254,222),  ##  14 -  23
+                    (251,251,251),  ##  23 -  32
+                    ( 94,254,158),  ##  32 -  41
+                    (162,254, 90),  ##  41 -  50
+                    (254,222,  0),  ##  50 -  59
+                    (254,158,  0),  ##  59 -  68
+                    (254, 90,  0),  ##  68 -  77
+                    (254, 30,  0),  ##  77 -  86
+                    (226,  0,  0),  ##  86 -  95
+                    (169,  0,  0),  ##  95 - 104
+                    (126,  0,  0),  ## 104 - 113
+                    (198,198,198)   ##     > 113
+                ]
