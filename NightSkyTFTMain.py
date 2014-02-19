@@ -21,12 +21,10 @@ import StringIO
 #
 import params
 
-## if running on RPi with a PiTFT
-##   search for all PiTFT comments and do as instructed
+## if running on Raspberry Pi with PiTFT:
 
-
-## PiTFT: (uncomment) 
-##import RPi.GPIO as GPIO
+if os.uname()[4][:3] == 'arm' and params.PiTFT == True:
+    import RPi.GPIO as GPIO
 
 #
 # function to calculate if night sky object is visible in a given hour
@@ -623,12 +621,13 @@ def dispMenu(options):
 # 
 def main():
 
-## PiTFT: (uncomment)
-##    GPIO.setmode(GPIO.BCM)
-##    GPIO.setup(23, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-##    GPIO.setup(22, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-##    GPIO.setup(27, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-##    GPIO.setup(18, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+## if running PiTFT:
+    if os.uname()[4][:3] == 'arm' and PiTFT == True:
+        GPIO.setmode(GPIO.BCM)
+        GPIO.setup(23, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+        GPIO.setup(22, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+        GPIO.setup(27, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+        GPIO.setup(18, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
     global background, screen, font
 
@@ -738,19 +737,20 @@ def main():
                 elif event.key == K_4:
                     buttonpress = 4
 
-## PiTFT (uncomment) 
-##        if not(GPIO.input(23)):
-##	    buttonpress = 1
-##	    time.sleep(0.5)
-##        if not(GPIO.input(22)):
-##            buttonpress = 2
-##            time.sleep(0.5)
-##        if not(GPIO.input(27)):
-##            buttonpress = 3
-##            time.sleep(0.5)
-##        if not(GPIO.input(18)):
-##            buttonpress = 4
-##            time.sleep(0.5)
+## if PiTFT
+        if os.uname()[4][:3] == 'arm' and PiTFT == True:
+            if not(GPIO.input(23)):
+                buttonpress = 1
+                time.sleep(0.5)
+            if not(GPIO.input(22)):
+                buttonpress = 2
+                time.sleep(0.5)
+            if not(GPIO.input(27)):
+                buttonpress = 3
+                time.sleep(0.5)
+            if not(GPIO.input(18)):
+                buttonpress = 4
+                time.sleep(0.5)
 
 ##        debug code to see button press events
 ##        text = font.render(str(buttonpress), 0, (0,250,150))
