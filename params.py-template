@@ -40,6 +40,12 @@ wug_location = "/q/ST/City.json"
 # wug_key = "*"
 wug_key = "*"
 
+
+#
+# Set to True if running on Raspberry Pi with PiTFT that has GPIO buttons
+#
+PiTFT = True
+
 #
 # End of mandatory configuration data
 #
