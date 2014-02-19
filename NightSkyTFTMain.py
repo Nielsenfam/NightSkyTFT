@@ -622,7 +622,7 @@ def dispMenu(options):
 def main():
 
 ## if running PiTFT:
-    if os.uname()[4][:3] == 'arm' and PiTFT == True:
+    if os.uname()[4][:3] == 'arm' and params.PiTFT == True:
         GPIO.setmode(GPIO.BCM)
         GPIO.setup(23, GPIO.IN, pull_up_down=GPIO.PUD_UP)
         GPIO.setup(22, GPIO.IN, pull_up_down=GPIO.PUD_UP)
@@ -738,7 +738,7 @@ def main():
                     buttonpress = 4
 
 ## if PiTFT
-        if os.uname()[4][:3] == 'arm' and PiTFT == True:
+        if os.uname()[4][:3] == 'arm' and params.PiTFT == True:
             if not(GPIO.input(23)):
                 buttonpress = 1
                 time.sleep(0.5)
