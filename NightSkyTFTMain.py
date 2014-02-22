@@ -21,8 +21,6 @@ import StringIO
 #
 import params
 
-## if running on Raspberry Pi with PiTFT:
-
 if os.uname()[4][:3] == 'arm' and params.PiTFT == True:
     import RPi.GPIO as GPIO
 
@@ -120,7 +118,7 @@ def dispTitle(title_text):
     title_font_size = 32
     title_font = pygame.font.SysFont(None, title_font_size)
 
-    line_surface = title_font.render(title_text, True, (0,0,255))
+    line_surface = title_font.render(title_text, True, (0,255,255))
     linerect = line_surface.get_rect()
     x = background.get_rect().centerx - linerect.width /2
     screen.blit(line_surface, (x,0))
@@ -177,7 +175,8 @@ def dispSky():
 
         # Get the data in text version
 
-        try: req = urllib2.Request(url)
+        try:
+            req = urllib2.Request(url)
         except:
             print "failed to request url: ", url
             fail_font = pygame.font.SysFont(None, 32)
@@ -190,7 +189,8 @@ def dispSky():
 
             return
             
-        try: response = urllib2.urlopen(req)
+        try:
+            response = urllib2.urlopen(req)
         except:
             print "failed to open url: ", url
             fail_font = pygame.font.SysFont(None, 32)
@@ -316,7 +316,8 @@ def dispWeather():
         
         url = params.wug_url_base + params.wug_key + \
                             params.wug_conditions + params.wug_location
-        try: f = urllib2.urlopen(url)
+        try:
+            f = urllib2.urlopen(url)
         except:
             print "failed to request url: ", url
             fail_font = pygame.font.SysFont(None, 32)
@@ -377,14 +378,17 @@ def dispWeather():
     data_color = (255,255,255)
 
     # put icon in middle of screen
-    stream = urllib2.urlopen(icon_url)
-    buffer = StringIO.StringIO(stream.read())
-    image_surface = pygame.image.load(buffer)
-    image_rect = image_surface.get_rect()
-    screen.blit(image_surface, (bg_rect.centerx \
+    try:
+        stream = urllib2.urlopen(icon_url)
+        buffer = StringIO.StringIO(stream.read())
+        image_surface = pygame.image.load(buffer)
+        image_rect = image_surface.get_rect()
+        screen.blit(image_surface, (bg_rect.centerx \
                                         - image_rect.width/2, \
                                 bg_rect.centery \
-                                        - image_rect.height/2)) 
+                                        - image_rect.height/2))
+    except:
+        print "no icon"
 
     # put weather description under icon
     weather_surface = data_font.render(weather, True, data_color)
@@ -640,10 +644,10 @@ def main():
 ## if running PiTFT:
     if os.uname()[4][:3] == 'arm' and params.PiTFT == True:
         GPIO.setmode(GPIO.BCM)
-        GPIO.setup(23, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-        GPIO.setup(22, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-        GPIO.setup(27, GPIO.IN, pull_up_down=GPIO.PUD_UP)
         GPIO.setup(18, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+        GPIO.setup(27, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+        GPIO.setup(22, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+        GPIO.setup(23, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
     global background, screen, font
 
