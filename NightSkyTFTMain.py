@@ -644,10 +644,10 @@ def main():
 ## if running PiTFT:
     if os.uname()[4][:3] == 'arm' and params.PiTFT == True:
         GPIO.setmode(GPIO.BCM)
-        GPIO.setup(18, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-        GPIO.setup(27, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-        GPIO.setup(22, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-        GPIO.setup(23, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+        GPIO.setup(params.gpio_button_1, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+        GPIO.setup(params.gpio_button_2, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+        GPIO.setup(params.gpio_button_3, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+        GPIO.setup(params.gpio_button_4, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
     global background, screen, font
 
@@ -768,16 +768,16 @@ def main():
 
 ## if PiTFT
         if os.uname()[4][:3] == 'arm' and params.PiTFT == True:
-            if not(GPIO.input(23)):
+            if not(GPIO.input(params.gpio_button_1)):
                 buttonpress = 1
                 time.sleep(0.5)
-            if not(GPIO.input(22)):
+            if not(GPIO.input(params.gpio_button_2)):
                 buttonpress = 2
                 time.sleep(0.5)
-            if not(GPIO.input(27)):
+            if not(GPIO.input(params.gpio_button_3)):
                 buttonpress = 3
                 time.sleep(0.5)
-            if not(GPIO.input(18)):
+            if not(GPIO.input(params.gpio_button_4)):
                 buttonpress = 4
                 time.sleep(0.5)
 

@@ -8,8 +8,8 @@
 # lat = *
 # lon = *
 #
-lat = 45
-lon = -90
+lat = 45.00
+lon = -90.00
 
 # Elevation in meters of observation location:
 #
@@ -72,6 +72,12 @@ wug_conditions = "/conditions"
 
 # URL of NASA website to parse for Two Line Element Set of ISS
 nasa_url = "http://spaceflight.nasa.gov/realdata/sightings/SSapplications/Post/JavaSSOP/orbit/ISS/SVPOST.html"
+
+# GPIO pins that represent button 1-4:
+gpio_button_1 = 18
+gpio_button_2 = 27
+gpio_button_3 = 22
+gpio_button_4 = 23
 
 #
 # Colors for clear dark sky display
