@@ -387,15 +387,15 @@ def dispWeather():
                                         - image_rect.width/2, \
                                 bg_rect.centery \
                                         - image_rect.height/2))
+        
+        # put weather description under icon
+        weather_surface = data_font.render(weather, True, data_color)
+        weather_rect = weather_surface.get_rect()
+        x = bg_rect.centerx - weather_rect.width/2
+        y = bg_rect.centery + image_rect.height/2 + 40
+        screen.blit(weather_surface, (x,y) )
     except:
         print "no icon"
-
-    # put weather description under icon
-    weather_surface = data_font.render(weather, True, data_color)
-    weather_rect = weather_surface.get_rect()
-    x = bg_rect.centerx - weather_rect.width/2
-    y = bg_rect.centery + image_rect.height/2 + 40
-    screen.blit(weather_surface, (x,y) )
 
     # draw data on screen                                   
     data_row_dy = 25
