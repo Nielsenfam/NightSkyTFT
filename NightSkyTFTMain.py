@@ -130,22 +130,7 @@ def dispMain():
 
     title_txt = "Main Menu"
     dispTitle(title_txt)
-#
-# Display astronomy object details
-#
-def dispDetails():
 
-    title_txt = "Details"
-    dispTitle(title_txt)
-
-    # explain that it is not implemented
-    details_font = pygame.font.SysFont(None, 32)
-    details_surface = details_font.render("Not Implemented", \
-                                        True, (255,0,0))
-    details_rect = details_surface.get_rect()
-    x = background.get_rect().centerx - details_rect.width/2
-    y = background.get_rect().centery
-    screen.blit(details_surface, (x,y) )
 
 #
 # Display Sky conditions for tonight
@@ -467,9 +452,198 @@ def dispWeather():
     screen.blit(wind_surface, (x,y))    
 
 #
+# Display planets
+#
+def dispPlanets():
+
+    title_txt = "Planets"
+    dispTitle(title_txt)
+
+    # explain that it is not implemented
+    details_font = pygame.font.SysFont(None, 32)
+    details_surface = details_font.render("Not Implemented", \
+                                        True, (255,0,0))
+    details_rect = details_surface.get_rect()
+    x = background.get_rect().centerx - details_rect.width/2
+    y = background.get_rect().centery
+    screen.blit(details_surface, (x,y) )
+
+#
+# Display Settings
+#
+def dispSettings():
+
+    title_txt = "Settings"
+    dispTitle(title_txt)
+
+    # explain that it is not implemented
+    details_font = pygame.font.SysFont(None, 32)
+    details_surface = details_font.render("Choose Setting", \
+                                        True, (255,0,0))
+    details_rect = details_surface.get_rect()
+    x = background.get_rect().centerx - details_rect.width/2
+    y = background.get_rect().centery
+    screen.blit(details_surface, (x,y) )
+
+#
+# Display sun/moon
+#
+def dispSunMoon():
+
+    title_txt = "Sun/Moon"
+    dispTitle(title_txt)
+
+    # explain that it is not implemented
+    details_font = pygame.font.SysFont(None, 32)
+    details_surface = details_font.render("Not Implemented", \
+                                        True, (255,0,0))
+    details_rect = details_surface.get_rect()
+    x = background.get_rect().centerx - details_rect.width/2
+    y = background.get_rect().centery
+    screen.blit(details_surface, (x,y) )
+
+#
+# Display key
+#
+def dispKey():
+
+    title_txt = "Key"
+    dispTitle(title_txt)
+
+    # explain that it is not implemented
+    details_font = pygame.font.SysFont(None, 32)
+    details_surface = details_font.render("Not Implemented", \
+                                        True, (255,0,0))
+    details_rect = details_surface.get_rect()
+    x = background.get_rect().centerx - details_rect.width/2
+    y = background.get_rect().centery
+    screen.blit(details_surface, (x,y) )
+
+
+#
+# Set Location
+#
+def dispSetLoc():
+
+    title_txt = "Set Location"
+    dispTitle(title_txt)
+
+    # explain that it is not implemented
+    details_font = pygame.font.SysFont(None, 32)
+    details_surface = details_font.render("Choose Location:", \
+                                        True, (255,0,0))
+    details_rect = details_surface.get_rect()
+    x = background.get_rect().centerx - details_rect.width/2
+    y = background.get_rect().centery
+    screen.blit(details_surface, (x,y) )
+
+#
+# Set Location 1
+#
+def dispLoc1():
+
+    title_txt = "Location 1"
+    dispTitle(title_txt)
+
+    # explain that it is not implemented
+    details_font = pygame.font.SysFont(None, 32)
+    details_surface = details_font.render("Location 1", \
+                                        True, (255,0,0))
+    details_rect = details_surface.get_rect()
+    x = background.get_rect().centerx - details_rect.width/2
+    y = background.get_rect().centery
+    screen.blit(details_surface, (x,y) )
+
+#
+# Set Location 2
+#
+def dispLoc2():
+
+    title_txt = "Location 2"
+    dispTitle(title_txt)
+
+    # explain that it is not implemented
+    details_font = pygame.font.SysFont(None, 32)
+    details_surface = details_font.render("Location 2", \
+                                        True, (255,0,0))
+    details_rect = details_surface.get_rect()
+    x = background.get_rect().centerx - details_rect.width/2
+    y = background.get_rect().centery
+    screen.blit(details_surface, (x,y) )
+
+#
+# Set Location 3
+#
+def dispLoc3():
+
+    title_txt = "Location 3"
+    dispTitle(title_txt)
+
+    # explain that it is not implemented
+    details_font = pygame.font.SysFont(None, 32)
+    details_surface = details_font.render("Location 3", \
+                                        True, (255,0,0))
+    details_rect = details_surface.get_rect()
+    x = background.get_rect().centerx - details_rect.width/2
+    y = background.get_rect().centery
+    screen.blit(details_surface, (x,y) )
+
+#
+# Display Forecast
+#
+def dispForecast():
+
+    title_txt = "Forecast"
+    dispTitle(title_txt)
+
+    # explain that it is not implemented
+    details_font = pygame.font.SysFont(None, 32)
+    details_surface = details_font.render("Not Implemented", \
+                                        True, (255,0,0))
+    details_rect = details_surface.get_rect()
+    x = background.get_rect().centerx - details_rect.width/2
+    y = background.get_rect().centery
+    screen.blit(details_surface, (x,y) )
+
+#
+# Display ISS
+#
+def dispISS():
+
+    title_txt = "ISS"
+    dispTitle(title_txt)
+
+    # explain that it is not implemented
+    details_font = pygame.font.SysFont(None, 32)
+    details_surface = details_font.render("Not Implemented", \
+                                        True, (255,0,0))
+    details_rect = details_surface.get_rect()
+    x = background.get_rect().centerx - details_rect.width/2
+    y = background.get_rect().centery
+    screen.blit(details_surface, (x,y) )
+
+#
+# Change Day
+#
+def dispChgDay():
+
+    title_txt = "Change Day"
+    dispTitle(title_txt)
+
+    # explain that it is not implemented
+    details_font = pygame.font.SysFont(None, 32)
+    details_surface = details_font.render("Not Implemented", \
+                                        True, (255,0,0))
+    details_rect = details_surface.get_rect()
+    x = background.get_rect().centerx - details_rect.width/2
+    y = background.get_rect().centery
+    screen.blit(details_surface, (x,y) )
+
+
+#
 # not used, but intended to show hourly weather data
 #
-def dispWeatherHourly():
+def dispHourly():
 
     title_txt = "Hourly Weather"
     dispTitle(title_txt)
@@ -665,13 +839,25 @@ def main():
 
 
     ## Dictionary of pages and the pages that are called from buttons 1-4
-    displaydict = { "Menu": ["Cycle","Details","Objs","Quit"],
-                    "Objs": ["Menu","Objs","Sky","Weather"],
-                    "Sky": ["Menu","Objs","Sky","Weather"],
-                    "Weather": ["Menu","Objs","Sky","Weather"],
+    displaydict = { "Main": ["Sky","Objects","Weather","Settings"],
+                    "Objects": ["Sun/Moon","Planets","ISS","Main"],
+                    "Sky": ["ChgDay","SetLoc","Key","Main"],
+                    "Weather": ["Forecast","Hourly","SetLoc","Main"],
                     "Quit": ["Yes","No","",""],
                     "Cycle": ["Yes","No","",""],
-                    "Details": ["Menu","Objs","Sky","Weather"],
+                    "Settings": ["Cycle","SetLoc","Quit","Main"],
+                    "ISS": ["","","","Back"],
+                    "Forecast": [ "","","","Back"],
+                    "Hourly": [ "","","","Back"],
+                    "Sun/Moon": [ "","","","Back"],
+                    "Planets": [ "","","","Back"],
+                    "PowerDown": ["","","","Back"],
+                    "SetLoc": ["Loc 1","Loc 2","Loc 3","Back"],
+                    "Loc 1": ["","","","Back"],
+                    "Loc 2": ["","","","Back"],
+                    "Loc 3": ["","","","Back"],
+                    "ChgDay": ["","","","Back"],
+                    "Key": ["","","","Back"],
                     "Yes":["","","",""],
                     "No":["","","",""]
                     }
@@ -744,7 +930,8 @@ def main():
         try:
             dispMenu(displaydict[displaypage])
         except KeyError:
-            print ( "no menu" )
+            print "no menu for:", displaypage
+            displaypage = "Main"
 
         ## Get keyboard events        
         buttonpress = 0
@@ -795,7 +982,7 @@ def main():
                 displaypage = choice[buttonpress-1]
             except KeyError:
                 print ( "No page found, back to page1" )
-                displaypage = "Menu"
+                displaypage = "Main"
               
             ## print ("choice = ", choice)
             ## print ("displaypage =", displaypage )
@@ -811,21 +998,37 @@ def main():
             # textpos.center = background.get_rect().center
             # screen.blit(text, textpos)
 
-            if (displaypage == "Menu"):
-                print ("call Menu")
+            if (displaypage == "Main"):
+                print ("call Main")
                 dispMain()
                 
-            elif (displaypage == "Objs"):
-                print ("call Objs")
+            elif (displaypage == "Objects"):
+                print ("call Objects")
                 dispObjs()
                     
             elif (displaypage == "Sky"):
                 print ("call Sky")
                 dispSky()
+
+            elif (displaypage == "ISS"):
+                print ("call ISS")
+                dispISS()
+
+            elif (displaypage == "Sun/Moon"):
+                print ("call Sun/Moon")
+                dispSunMoon()
                                     
             elif (displaypage == "Weather"):
                 print ("call Weather")
                 dispWeather()
+
+            elif (displaypage == "Forecast"):
+                print ("call Forecast")
+                dispForecast()
+
+            elif (displaypage == "Hourly"):
+                print ("call Hourly")
+                dispHourly()
                     
             elif (displaypage == "Quit"):
                 print ("call Quit")
@@ -835,28 +1038,65 @@ def main():
                 print ("call Cycle")
                 cycle_confirm = True
                 
-            elif (displaypage == "Details"):
-                print ("call Details")
-                dispDetails()
-                
+            elif (displaypage == "Planets"):
+                print ("call Planets")
+                dispPlanets()
+
+            elif (displaypage == "Key"):
+                print ("call Key")
+                dispKey()
+
+            elif (displaypage == "Settings"):
+                print ("call Settings")
+                dispSettings()
+
+            elif (displaypage == "SetLoc"):
+                print ("call Set Location")
+                dispSetLoc()
+
+            elif (displaypage == "Loc 1"):
+                print ("call Loc 1")
+                dispLoc1()
+
+            elif (displaypage == "Loc 2"):
+                print ("call Loc 2")
+                dispLoc2()
+
+            elif (displaypage == "Loc 3"):
+                print ("call Loc 3")
+                dispLoc3()
+
+            elif (displaypage == "ChgDay"):
+                print ("call Change Day")
+                dispChgDay()
+
+            elif (displaypage == "Back"):
+                print ("call Back")
+                displaypage = "Main"
+                dispMain()
+               
             elif (displaypage =="Yes"):
                 if (quit_confirm):
                     pygame.quit()
                     exit()
                 if (cycle_confirm):
                     cycle_flag = True
-                    displaypage = "Objs"
+                    displaypage = "Objects"
                     dispObjs()
                     
             elif (displaypage =="No"):
                 if (quit_confirm):
                     quit_confirm = False
-                    displaypage = "Menu"
+                    displaypage = "Main"
                     dispMain()
 
                 if (cycle_confirm):
                     cycle_flag = False
-                    displaypage = "Menu"
+                    displaypage = "Main"
+                    dispMain()
+            else:
+                    print "invalid page"
+                    displaypage = "Main"
                     dispMain()
         
         pygame.display.update()
@@ -869,12 +1109,12 @@ def main():
             if ( (time.localtime()[5] == 0) and
                  (cycle_min != time.localtime()[4]) ):
                 cycle_min = time.localtime()[4]
-                if (displaypage == "Objs"):
+                if (displaypage == "Objects"):
                     displaypage = "Sky"
                 elif (displaypage == "Sky"):
                     displaypage = "Weather"
                 elif (displaypage == "Weather"):
-                    displaypage = "Objs"
+                    displaypage = "Objects"
 
 if __name__ == '__main__':
     main()
