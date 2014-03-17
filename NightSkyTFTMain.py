@@ -99,7 +99,7 @@ def calc_status( rise_tm, set_tm, clocktm ):
 def dispHourCols():
 
         hourx = 0
-        houry = 38
+        houry = 38 +24
         
         hour_label = font.render("Hour:", True, (255,255,255))
         screen.blit(hour_label, (hourx, houry))
@@ -110,6 +110,7 @@ def dispHourCols():
             hour_col = font.render( str(col), True, (255,255,255))
             screen.blit(hour_col, (hourx, houry))
             hourx = hourx + xinc
+
 #
 # function to display title
 #
@@ -122,6 +123,29 @@ def dispTitle(title_text):
     linerect = line_surface.get_rect()
     x = background.get_rect().centerx - linerect.width /2
     screen.blit(line_surface, (x,0))
+
+
+#
+# function to display location
+#
+def dispLocation():
+
+    global location, loc_idx1
+
+    location = params.loc_names[ loc_idx ]
+
+    
+    bg_rect = background.get_rect()
+
+    # display location under title in large font
+    location_font_size = 32
+    location_font = pygame.font.SysFont(None, location_font_size)
+
+    loc_surface = location_font.render(location, True, (255,0,0))
+    loc_rect = loc_surface.get_rect()
+    x = bg_rect.centerx - loc_rect.width /2
+    screen.blit(loc_surface, (x,32))
+
     
 #
 # Display Main Menu and Description
@@ -131,6 +155,23 @@ def dispMain():
     title_txt = "Main Menu"
     dispTitle(title_txt)
 
+    title_font = pygame.font.SysFont(None, 25)
+    title_lines = [ "      The Night Sky Orb",
+                    "",
+                    "   Night Sky Viewing Info",
+                    "",
+                    "    1. Night Sky Conditions",
+                    "    2. Visible Objects",
+                    "    3. Weather Info",
+                    "    4. Change Settings" ]
+
+    y = 38
+    x = 40
+    yinc = 16
+    for title_line in ( title_lines ):
+        line_label = title_font.render( title_line, True, (255,255,255))
+        screen.blit(line_label, (x,y))
+        y = y + yinc
 
 #
 # Display Sky conditions for tonight
@@ -140,8 +181,12 @@ def dispSky():
 
     global cloud_d, transp_d, seeing_d, wind_d, humidity_d, temp_d, skyrefresh
 
+    global loc_idx
+
     title_txt = "Sky"
     dispTitle(title_txt)
+
+    dispLocation()
 
     dispHourCols()
 
@@ -156,7 +201,7 @@ def dispSky():
         temp_d = {}
 
         # Get the html page from www.cleardarksky.com
-        url  = params.clear_dark_sky_url
+        url  = params.clear_dark_sky_url[loc_idx]
 
         # Get the data in text version
 
@@ -247,7 +292,7 @@ def dispSky():
         skyrefresh = time.time()
         print "refreshing sky data at:", skyrefresh
 
-    y = 38 + 3*16 - 8
+    y = 78 +32
     xinc = 20
     yinc = 16
     for row in ( "clouds","transp","seeing","wind","humid","temp" ):
@@ -260,22 +305,40 @@ def dispSky():
             shade = (0,0,0)
             if row == "clouds":
                 if hr in cloud_d:
-                    shade = params.cloud_shades[ int(cloud_d[hr])]
+                    try:
+                        shade = params.cloud_shades[ int(cloud_d[hr])]
+                    except:
+                        shade = (255,255,255)
             elif row == "transp":
                 if hr in transp_d:
-                    shade = params.transp_shades[ int(transp_d[hr])]
+                    try:
+                        shade = params.transp_shades[ int(transp_d[hr])]
+                    except:
+                        shade = (255,255,255)
             elif row == "seeing":
                 if hr in seeing_d:
-                    shade = params.seeing_shades[ int(seeing_d[hr])]
+                    try:
+                        shade = params.seeing_shades[ int(seeing_d[hr])]
+                    except:
+                        shade = (255,255,255)
             elif row == "wind":
                 if hr in wind_d:
-                    shade = params.wind_shades[ int(wind_d[hr])]
+                    try:
+                        shade = params.wind_shades[ int(wind_d[hr])]
+                    except:
+                        shade = (255,255,255)
             elif row == "humid":
                 if hr in humidity_d:
-                    shade = params.humidity_shades[ int(humidity_d[hr])]
+                    try:
+                        shade = params.humidity_shades[ int(humidity_d[hr])]
+                    except:
+                        shade = (255,255,255)
             elif row == "temp":
                 if hr in temp_d:
-                    shade = params.temp_shades[ int(temp_d[hr])]
+                    try:
+                        shade = params.temp_shades[ int(temp_d[hr])]
+                    except:
+                        shade = (255,255,255)
                 
             # print "x, y, shade =", x, y, shade
 
@@ -295,12 +358,16 @@ def dispWeather():
 
     global location, temp_f, wind_dir, wind_mph, dewpoint
     global visibility, weather, icon_url, weather_refresh
+    global loc_idx
+
+    bg_rect = background.get_rect()
+
 
     # if it has been more than a certain # of mins since last refresh do it
     if (time.time() - weather_refresh) > (params.weather_refresh_rate * 60):
         
         url = params.wug_url_base + params.wug_key + \
-                            params.wug_conditions + params.wug_location
+                            params.wug_conditions + params.wug_location[loc_idx]
         try:
             f = urllib2.urlopen(url)
         except:
@@ -330,7 +397,7 @@ def dispWeather():
             screen.blit(fail_surface, (x,y) )
             return        
             
-        location = observation['display_location']['city']
+        # location = observation['display_location']['city']
         temp_f = observation['temp_f']
         wind_dir = observation['wind_dir']
         wind_mph = observation['wind_mph']
@@ -347,16 +414,7 @@ def dispWeather():
         weather_refresh = time.time()
         print "refreshing weather data at:", weather_refresh
 
-    bg_rect = background.get_rect()
-
-    # display location under title in large font
-    location_font_size = 32
-    location_font = pygame.font.SysFont(None, location_font_size)
-
-    loc_surface = location_font.render(location, True, (255,0,0))
-    loc_rect = loc_surface.get_rect()
-    x = bg_rect.centerx - loc_rect.width /2
-    screen.blit(loc_surface, (x,32))
+    dispLocation()
 
     data_font_size = 22
     data_font = pygame.font.SysFont(None, data_font_size)
@@ -374,13 +432,14 @@ def dispWeather():
                                         - image_rect.height/2))
         
         # put weather description under icon
+        print "weather = ", weather
         weather_surface = data_font.render(weather, True, data_color)
         weather_rect = weather_surface.get_rect()
         x = bg_rect.centerx - weather_rect.width/2
         y = bg_rect.centery + image_rect.height/2 + 40
         screen.blit(weather_surface, (x,y) )
     except:
-        print "no icon"
+        print "no icon at:", icon_url
 
     # draw data on screen                                   
     data_row_dy = 25
@@ -476,14 +535,24 @@ def dispSettings():
     title_txt = "Settings"
     dispTitle(title_txt)
 
-    # explain that it is not implemented
-    details_font = pygame.font.SysFont(None, 32)
-    details_surface = details_font.render("Choose Setting", \
-                                        True, (255,0,0))
-    details_rect = details_surface.get_rect()
-    x = background.get_rect().centerx - details_rect.width/2
-    y = background.get_rect().centery
-    screen.blit(details_surface, (x,y) )
+    settings_font = pygame.font.SysFont(None, 25)
+    settings_lines = [ "",
+                    "",
+                    "   Change Settings",
+                    "",
+                    "    1. Toggle Cycling On/Off",
+                    "    2. Select Location",
+                    "    3. Quit to OS",
+                    "    4. Back" ]
+
+    y = 38
+    x = 40
+    yinc = 16
+    for setting_line in ( settings_lines ):
+        line_label = settings_font.render( setting_line, True, (255,255,255))
+        screen.blit(line_label, (x,y))
+        y = y + yinc
+
 
 #
 # Display sun/moon
@@ -528,65 +597,63 @@ def dispSetLoc():
     title_txt = "Set Location"
     dispTitle(title_txt)
 
-    # explain that it is not implemented
+    # Prompt to choose location
+    y = 38 + 18
+    yinc = 18
+
     details_font = pygame.font.SysFont(None, 32)
     details_surface = details_font.render("Choose Location:", \
-                                        True, (255,0,0))
+                                        True, (255,255,255))
     details_rect = details_surface.get_rect()
     x = background.get_rect().centerx - details_rect.width/2
-    y = background.get_rect().centery
     screen.blit(details_surface, (x,y) )
+    y = y + yinc
+
+
+    details_font = pygame.font.SysFont(None, 28)
+    for loc_num in (range(0,3)):
+
+        details_surface = details_font.render( str(loc_num+1) + ". " \
+                                        + params.loc_names[loc_num], \
+                                        True, (255,255,255))
+        details_rect = details_surface.get_rect()
+        y = y + yinc
+        screen.blit(details_surface, (x,y) )
+
+    
 
 #
 # Set Location 1
 #
 def dispLoc1():
 
-    title_txt = "Location 1"
-    dispTitle(title_txt)
+    global loc_idx, weather_refresh, sky_refresh
+    loc_idx = 0
+    weather_refresh = 0
+    sky_refresh = 0
 
-    # explain that it is not implemented
-    details_font = pygame.font.SysFont(None, 32)
-    details_surface = details_font.render("Location 1", \
-                                        True, (255,0,0))
-    details_rect = details_surface.get_rect()
-    x = background.get_rect().centerx - details_rect.width/2
-    y = background.get_rect().centery
-    screen.blit(details_surface, (x,y) )
 
 #
 # Set Location 2
 #
 def dispLoc2():
 
-    title_txt = "Location 2"
-    dispTitle(title_txt)
+    global loc_idx, weather_refresh, sky_refresh
+    loc_idx = 1
+    weather_refresh = 0
+    sky_refresh = 0
 
-    # explain that it is not implemented
-    details_font = pygame.font.SysFont(None, 32)
-    details_surface = details_font.render("Location 2", \
-                                        True, (255,0,0))
-    details_rect = details_surface.get_rect()
-    x = background.get_rect().centerx - details_rect.width/2
-    y = background.get_rect().centery
-    screen.blit(details_surface, (x,y) )
 
 #
 # Set Location 3
 #
 def dispLoc3():
 
-    title_txt = "Location 3"
-    dispTitle(title_txt)
+    global loc_idx, weather_refresh, sky_refresh
+    loc_idx = 2
+    weather_refresh = 0
+    sky_refresh = 0
 
-    # explain that it is not implemented
-    details_font = pygame.font.SysFont(None, 32)
-    details_surface = details_font.render("Location 3", \
-                                        True, (255,0,0))
-    details_rect = details_surface.get_rect()
-    x = background.get_rect().centerx - details_rect.width/2
-    y = background.get_rect().centery
-    screen.blit(details_surface, (x,y) )
 
 #
 # Display Forecast
@@ -666,16 +733,20 @@ def dispHourly():
 #
 def dispObjs():
 
+    global loc_idx
+
     title_txt = "Objects"
     dispTitle(title_txt)
 
+    dispLocation()
+    
     dispHourCols()
 
     # local inforamtion parameterized
-    lat = params.lat
-    lon = params.lon
-    alt = params.alt
-    tz = params.tz
+    lat = params.lat[loc_idx]
+    lon = params.lon[loc_idx]
+    alt = params.alt[loc_idx]
+    tz = params.tz[loc_idx]
 
     # time of clock start and end in military time
     clock_start_hr = 17
@@ -827,7 +898,11 @@ def main():
 
     global cloud_d, transp_d, seeing_d, wind_d, humidity_d, temp_d, skyrefresh
 
+    global loc_idx
+
     skyrefresh = 0
+
+    loc_idx = params.startup_loc_idx
 
     global location, temp_f, wind_dir, wind_mph, dewpoint
     global visibility, weather, icon_url, weather_refresh
