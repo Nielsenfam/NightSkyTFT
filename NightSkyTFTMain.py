@@ -757,15 +757,15 @@ def dispObjs():
     set_tm_d = {}
     rise_tm_d = {}
 
-    # use time of 4PM today for all calculations so that it always gets next rise and set times for this evening
+    # use time of 5AM today for all calculations so that it always gets next rise and set times for this evening
 
     mytz = pytz.timezone(tz)
     eptz = pytz.timezone('utc')
 
     now = datetime.date.today()
-    afternoon = mytz.localize( datetime.datetime(now.year,now.month,now.day)+ datetime.timedelta(hours=16))
-    eptafternoon = afternoon.astimezone(eptz)
-    # print "eptafternoon", eptafternoon
+    basetime = mytz.localize( datetime.datetime(now.year,now.month,now.day)+ datetime.timedelta(hours=5))
+    eptbasetime = basetime.astimezone(eptz)
+    # print "eptbasetime", eptabasetime
 
     # define objects
     sun = ephem.Sun()
@@ -780,8 +780,8 @@ def dispObjs():
     here.lon = str(lon)
     here.lat = str(lat)
     here.elev = alt
-    here.date = eptafternoon
-    # print here
+    here.date = eptbasetime
+    print here
 
     # compute objects based upon current location
     sun.compute(here)
@@ -821,12 +821,12 @@ def dispObjs():
     rise_tm_d[ "saturn" ] = saturn_r
     set_tm_d[ "saturn" ] = saturn_s
 
-    ## print "sun r,s:", sun_r, sun_s
-    ## print "moon r,s:", moon_r, moon_s
-    ## print "venus r,s:", venus_r, venus_s 
-    ## print "mars r,s:", mars_r, mars_s
-    ## print "jupiter_r,s:", jupiter_r, jupiter_s
-    ## print "saturn_r,s:", saturn_r, saturn_s
+    print "sun r,s:", sun_r, sun_s
+    print "moon r,s:", moon_r, moon_s
+    print "venus r,s:", venus_r, venus_s 
+    print "mars r,s:", mars_r, mars_s
+    print "jupiter_r,s:", jupiter_r, jupiter_s
+    print "saturn_r,s:", saturn_r, saturn_s
 
     y = 38 + 3*16
     xinc = 20
