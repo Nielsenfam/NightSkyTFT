@@ -152,6 +152,10 @@ def dispLocation():
 #
 def dispMain():
 
+
+    global back_page
+    
+    back_page = "Main"
     title_txt = "Main Menu"
     dispTitle(title_txt)
 
@@ -179,9 +183,11 @@ def dispMain():
 #
 def dispSky():
 
-    global cloud_d, transp_d, seeing_d, wind_d, humidity_d, temp_d, skyrefresh
+    global cloud_d, transp_d, seeing_d, wind_d, humidity_d, temp_d, sky_refresh
 
-    global loc_idx
+    global loc_idx, back_page
+
+    back_page = "Sky"
 
     title_txt = "Sky"
     dispTitle(title_txt)
@@ -191,7 +197,7 @@ def dispSky():
     dispHourCols()
 
     # if it has been more than a certain # of mins since last refresh do it
-    if (time.time() - skyrefresh) > (params.sky_refresh_rate * 60): 
+    if (time.time() - sky_refresh) > (params.sky_refresh_rate * 60): 
         
         cloud_d = {}
         transp_d = {}
@@ -257,9 +263,9 @@ def dispSky():
                     datestruct.tm_mday == now.day ):
 
                     if ( datestruct.tm_hour > (16) ):   
-                        # print "todays hour, cloud, transp, seeing, wind, hum, temp : ", \
-                        #      datestruct.tm_hour, cols[1], cols[2], cols[3], \
-                        #      cols[4], cols[5], cols[6]
+##                        print "todays hour, cloud, transp, seeing, wind, hum, temp : ", \
+##                             datestruct.tm_hour, cols[1], cols[2], cols[3], \
+##                             cols[4], cols[5], cols[6]
                         cloud_d[datestruct.tm_hour] = cols[1]
                         transp_d[datestruct.tm_hour] = cols[2]
                         seeing_d[datestruct.tm_hour] = cols[3]
@@ -273,8 +279,8 @@ def dispSky():
                   datestruct.tm_mday == tomorrow.day ): 
 
                     if ( datestruct.tm_hour < 6):   
-                        # print "tomorrows hour, cloud, transp, seeing: ", \
-                        #    datestruct.tm_hour, cols[1], cols[2], cols[3]
+##                        print "tomorrows hour, cloud, transp, seeing: ", \
+##                           datestruct.tm_hour, cols[1], cols[2], cols[3]
                         cloud_d[datestruct.tm_hour] = cols[1]
                         transp_d[datestruct.tm_hour] = cols[2]
                         seeing_d[datestruct.tm_hour] = cols[3]
@@ -289,8 +295,8 @@ def dispSky():
                   if ( datestruct.tm_hour == 6):   
                       break
                     
-        skyrefresh = time.time()
-        print "refreshing sky data at:", skyrefresh
+        sky_refresh = time.time()
+        print "refreshing sky data at:", sky_refresh
 
     y = 78 +32
     xinc = 20
@@ -308,37 +314,37 @@ def dispSky():
                     try:
                         shade = params.cloud_shades[ int(cloud_d[hr])]
                     except:
-                        shade = (255,255,255)
+                        shade = (0,0,0)
             elif row == "transp":
                 if hr in transp_d:
                     try:
                         shade = params.transp_shades[ int(transp_d[hr])]
                     except:
-                        shade = (255,255,255)
+                        shade = (0,0,0)
             elif row == "seeing":
                 if hr in seeing_d:
                     try:
                         shade = params.seeing_shades[ int(seeing_d[hr])]
                     except:
-                        shade = (255,255,255)
+                        shade = (0,0,0)
             elif row == "wind":
                 if hr in wind_d:
                     try:
                         shade = params.wind_shades[ int(wind_d[hr])]
                     except:
-                        shade = (255,255,255)
+                        shade = (0,0,0)
             elif row == "humid":
                 if hr in humidity_d:
                     try:
                         shade = params.humidity_shades[ int(humidity_d[hr])]
                     except:
-                        shade = (255,255,255)
+                        shade = (0,0,0)
             elif row == "temp":
                 if hr in temp_d:
                     try:
                         shade = params.temp_shades[ int(temp_d[hr])]
                     except:
-                        shade = (255,255,255)
+                        shade = (0,0,0)
                 
             # print "x, y, shade =", x, y, shade
 
@@ -353,12 +359,14 @@ def dispSky():
 #
 def dispWeather():
 
-    title_txt = "Current Weather"
-    dispTitle(title_txt)
 
     global location, temp_f, wind_dir, wind_mph, dewpoint
     global visibility, weather, icon_url, weather_refresh
-    global loc_idx
+    global loc_idx, back_page
+
+    title_txt = "Current Weather"
+    dispTitle(title_txt)
+    back_page = "Weather"
 
     bg_rect = background.get_rect()
 
@@ -821,12 +829,12 @@ def dispObjs():
     rise_tm_d[ "saturn" ] = saturn_r
     set_tm_d[ "saturn" ] = saturn_s
 
-    print "sun r,s:", sun_r, sun_s
-    print "moon r,s:", moon_r, moon_s
-    print "venus r,s:", venus_r, venus_s 
-    print "mars r,s:", mars_r, mars_s
-    print "jupiter_r,s:", jupiter_r, jupiter_s
-    print "saturn_r,s:", saturn_r, saturn_s
+##    print "sun r,s:", sun_r, sun_s
+##    print "moon r,s:", moon_r, moon_s
+##    print "venus r,s:", venus_r, venus_s 
+##    print "mars r,s:", mars_r, mars_s
+##    print "jupiter_r,s:", jupiter_r, jupiter_s
+##    print "saturn_r,s:", saturn_r, saturn_s
 
     y = 38 + 3*16
     xinc = 20
@@ -896,11 +904,13 @@ def main():
 
     global background, screen, font
 
-    global cloud_d, transp_d, seeing_d, wind_d, humidity_d, temp_d, skyrefresh
+    global cloud_d, transp_d, seeing_d, wind_d, humidity_d, temp_d, sky_refresh
 
-    global loc_idx
+    global loc_idx, back_page, displaypage
 
-    skyrefresh = 0
+    back_page = "Main"
+
+    sky_refresh = 0
 
     loc_idx = params.startup_loc_idx
 
@@ -1073,6 +1083,11 @@ def main():
             # textpos.center = background.get_rect().center
             # screen.blit(text, textpos)
 
+            if (displaypage == "Back"):
+                displaypage = back_page
+                print ("call Back to page: ", back_page)
+
+
             if (displaypage == "Main"):
                 print ("call Main")
                 dispMain()
@@ -1144,11 +1159,6 @@ def main():
             elif (displaypage == "ChgDay"):
                 print ("call Change Day")
                 dispChgDay()
-
-            elif (displaypage == "Back"):
-                print ("call Back")
-                displaypage = "Main"
-                dispMain()
                
             elif (displaypage =="Yes"):
                 if (quit_confirm):
