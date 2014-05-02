@@ -1,4 +1,4 @@
-# MightSkyTF Readme
+# NightSkyTF Readme
 
 
 # NigthSkyTFT Hardware
@@ -85,14 +85,16 @@ Get stuff for calculating ephem by getting pyephem and pytz packages:
 sudo pip install pyephem pytz
 ```
 
-## 12. get git so we can get NightSkyTFT code: 
+## 12. get git so we can get NightSkyTFT code 
 
 
 ```
 sudo apt-get install git
 ```
 
-## 13. get NightSkyTFT code from github:
+## 13. Get the python code
+
+get NightSkyTFT code from github
 
 ```
 git clone http://github.com/Nielsenfam/NightSkyTFT
@@ -103,6 +105,8 @@ git clone http://github.com/Nielsenfam/NightSkyTFT
 Goto http://www.wunderground.com/weather/api/ and signup for a key. The key will be used in the setup parameters in the next step.
 
 ## 15. Setup parameters for NightSkyTFT
+
+The NightSkyTFT settings are all stored in a file called params.py, these need to be modified as follows:
 
 ```
 cd NightSkyTFT
@@ -181,7 +185,6 @@ sudo vi /boot/config.txt
 display_rotate=2
 ```
 
-
 then edit the cmdlin.txt file:
 
 ```
@@ -212,7 +215,9 @@ startx
 the startx is just a test, if it works, just quit if X windows desktop after it tarts on the TFT display
 
 
-## 19. Now make modules permanent on boot:
+## 19. Make modules permanent
+
+Now make modules permanent on boot by doing the following:
 
 
 ```
