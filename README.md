@@ -1,5 +1,7 @@
+# MightSkyTF Readme
 
-# Hardware for NigthSkyTFT:
+
+# NigthSkyTFT Hardware
 
 ## Hardware Parts List
 
@@ -11,14 +13,14 @@
 - Case for Raspberry Pi, see http://www.thingiverse.com/thing:233396
 - Stand for Raspberry Pi see http://www.thingiverse.com/thing:254532
 
-## Hardware needed for Setup only:
+## Hardware needed for Setup only
 
 - HDMI Monitor or other suitable monitor compatible with the Pi
 - USB Keyboard
 - USB Mouse
 - USB Hub unless keyboard/mouse only need one USB port
 
-# How to setup a RaspberryPi to run the NightSkyTFT software:
+# Software Setup
 
 ## 1. format SD card 
 
@@ -53,7 +55,7 @@ startx
 
 Setup a wifi connection using gui tool on desktop
 
-## 8. Update raspberrian:
+## 8. Update raspberrian
 
 
 ```
@@ -61,19 +63,23 @@ sudo apt-get update
 sudo apt-get upgrade
 ```
 
-## 9. Install vncserver (not strictly necessary, but convenient since will be running headless)
+## 9. Install vncserver 
+
+This is not strictly necessary, but convenient since will be running headless.
 
 ```
 sudo apt-get install tightvncserver
 ```
 
-## 10. Setup python development:
+## 10. Setup python development
 
 ```
 sudo apt-get install python-pip python-dev
 ```
 
-## 11. get stuff for calculating ephem by getting pyephem and pytz packages:
+## 11. get stuff for calculating ephem
+
+Get stuff for calculating ephem by getting pyephem and pytz packages:
 
 ```
 sudo pip install pyephem pytz
@@ -107,9 +113,9 @@ cp params.py-template params.py
 nano params.py 
 ```
 
-### 15a. Set locations.
+### 15a. Set locations
 
-You can setup up to three different locations, for each you will need to know the latitude, longitude and altitude set the parameters in the file for location 0, 1 and 2: 
+You can setup up to three different locations, for each you will need to know the latitude, longitude and altitude set the parameters in the file for location 0, 1 and 2 for example, to setup the first location edit the following: 
 
 
 ```
@@ -120,21 +126,23 @@ lon[0] = -39.5153
 alt[0] = 1000
 ```
 
-### 15b. Set the weather underground keys:
+### 15b. Set the weather underground keys
+
+Set the weather underground API key in the file by editing the value of wug_key like this:
 
 ```
 wug_key = "xxxx"
 ```
 
-### 15c. Set the start screen:
+### 15c. Set the start screen
 
 ??
 
-### 15d. Turn on/off buttons:
+### 15d. Turn on/off buttons
 
 ??
 
-### 15e. Setup the cleardarksky locations:
+### 15e. Setup the cleardarksky locations
 
 ??
 
@@ -142,7 +150,9 @@ wug_key = "xxxx"
 
 
 
-## 16. Get the code for driving the TFT screen from adafruit:
+## 16. Get TFT code
+
+Get the code for driving the TFT screen from adafruit by doing the following:
 
 
 ```
@@ -157,31 +167,29 @@ sudo dpkg -i -B *.deb
 ```
 
 
-## 17. If you want the boot sequence to show up on the TFT display, edit config.txt to rotate display 180 degrees
+## 17. Setup console on the TFT display
+
+This is also optional, but if you want the boot sequence to show up on the TFT display do this. 
+
+First if you need to rotate the display, edit config.txt to rotate display 180 degrees
 
 ```
 sudo vi /boot/config.txt
 ```
-
-
-
-add line at end:
-
 
 ```
 display_rotate=2
 ```
 
 
-then edit the codlin.txt file:
+then edit the cmdlin.txt file:
 
 ```
 sudo vi /boot/cmdline.txt
 ```
 
 
-
-after rootwait enter:
+after rootwait add the following:
 
 
 ```
@@ -189,7 +197,7 @@ fbcon=map:10 fbcon=font:VGA8x8
 ```
 
 
-## 18. Setup TFT modules:
+## 18. Setup TFT modules
 
 
 ```
@@ -201,7 +209,7 @@ startx
 ```
 
 
-the starts is just a test, quit if X windows desktop starts on TFT display
+the startx is just a test, if it works, just quit if X windows desktop after it tarts on the TFT display
 
 
 ## 19. Now make modules permanent on boot:
@@ -210,7 +218,6 @@ the starts is just a test, quit if X windows desktop starts on TFT display
 ```
 sudo vi /etc/modules
 ```
-
 
 
 add these two lines:
@@ -242,7 +249,9 @@ then reboot to see if it works:
 sudo reboot
 ```
 
-## 21. Make nightskyboot run on startup
+## 21. Starting up on boot
+
+To mmke nightskyboot run on startup do the following:
 
 ```
 cd ~/NightSkyTFT
