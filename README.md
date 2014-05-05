@@ -1,4 +1,4 @@
-# NightSkyTF Readme
+# NightSkyTFT Readme
 
 
 # NigthSkyTFT Hardware
@@ -119,18 +119,39 @@ nano params.py
 
 ### 15a. Set locations
 
-You can setup up to three different locations, for each you will need to know the latitude, longitude and altitude set the parameters in the file for location 0, 1 and 2 for example, to setup the first location edit the following: 
+You can setup up to three different locations, for each you will need to know the latitude, longitude, altitude and timezone. 
 
+Set the parameters in the file for location 0, 1 and 2. For example, to setup the first location edit the following: 
 
 ```
 lat[0] = 64.4186
 lon[0] = -39.5153
-
-
 alt[0] = 1000
+tz[0] = 'US/Central'
+
 ```
 
-### 15b. Set the weather underground keys
+### 15b. Setup the cleardarksky locations
+
+The cleardarksky.com website provides simple text formated data as well as the graphic pages. The text file web page can be found from the graphical page. And has a format like:
+
+http://cleardarksky.com/txtc/FlagstaffAZcsp.txt
+
+The parameter should be set like this for each location:
+
+```
+clear_dark_sky_url[0]=http://cleardarksky.com/txtc/FlagstaffAZcsp.txt
+```
+
+### 15c. Set the weather pages
+
+For each location, setup the weather underground location page like this:
+
+```
+wug_location[0] = "/q/ST/City.json"
+```
+
+### 15d. Set the weather underground key
 
 Set the weather underground API key in the file by editing the value of wug_key like this:
 
@@ -138,21 +159,30 @@ Set the weather underground API key in the file by editing the value of wug_key 
 wug_key = "xxxx"
 ```
 
-### 15c. Set the start screen
+### 15e. Test under X Windows
 
-??
+Set PiTFT to False and save the param.py file.
 
-### 15d. Turn on/off buttons
+```
+PiTFT = False
+```
 
-??
+If you are running from a remote terminal or from the console, start your desktop environment with a startx and then start a terminal window cd to the NightSkyTFT directory and run the NightSkyTFTMain.py program, like this: 
 
-### 15e. Setup the cleardarksky locations
+```
+cd NightSkyTFT
+python ./NightSkyTFT.py
+```
 
-??
+You should see an X window open showing the splash screen and then the main menu. Using the keyboard numbers for the menu choices, select weather, objects, sky conditions to see that they all work. Error messages will show up in the terminal window. 
 
-### 15f. Save parameters file
+Then toggle through the different locations, and confirm the weather, objects and sky conditions again to verify they all work.
 
+If everythign is correct, edit the params.py file again and set PiTFT to True if running on Raspberry Pi with PiTFT that has 4 buttons on GPIO. Set to False if you do not have the buttons. 
 
+```
+PiTFT = True
+```
 
 ## 16. Get TFT code
 
@@ -233,7 +263,7 @@ spi-bcm2708
 fbtft_device
 ```
 
-## 20. Create modprobe.d file:
+## 20. Create modprobe.d file
 
 ```
 sudo vi /etc/modprobe.d/adafruit.conf
