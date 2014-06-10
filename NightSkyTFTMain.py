@@ -688,14 +688,110 @@ def dispISS():
     title_txt = "ISS"
     dispTitle(title_txt)
 
-    # explain that it is not implemented
-    details_font = pygame.font.SysFont(None, 32)
-    details_surface = details_font.render("Not Implemented", \
+    dispLocation()
+
+    # local inforamtion parameterized
+    lat = params.lat[loc_idx]
+    lon = params.lon[loc_idx]
+    alt = params.alt[loc_idx]
+    tz = params.tz[loc_idx]
+
+
+    # use time of 5AM today for all calculations so that it always gets next rise and set times for this evening
+    mytz = pytz.timezone(tz)
+    eptz = pytz.timezone('utc')
+
+    now = datetime.date.today()
+    basetime = mytz.localize( datetime.datetime(now.year,now.month,now.day)+ datetime.timedelta(hours=5))
+    eptbasetime = basetime.astimezone(eptz)
+    # print "eptbasetime", eptabasetime
+    
+
+    # setup current location
+    here = ephem.Observer()
+    here.lon = str(lon)
+    here.lat = str(lat)
+    here.elev = alt
+    here.date = eptbasetime
+    print here 
+
+    url = params.nasa_url
+
+    try:
+        req = urllib2.Request(url)
+    except:
+        print "failed to request url: ", url
+        fail_font = pygame.font.SysFont(None, 32)
+        fail_surface = fail_font.render("No ISS Data Available", \
                                         True, (255,0,0))
-    details_rect = details_surface.get_rect()
-    x = background.get_rect().centerx - details_rect.width/2
-    y = background.get_rect().centery
-    screen.blit(details_surface, (x,y) )
+        fail_rect = fail_surface.get_rect()
+        x = background.get_rect().centerx - fail_rect.width/2
+        y = background.get_rect().centery
+        screen.blit(fail_surface, (x,y) )
+
+        return
+        
+    try:
+        response = urllib2.urlopen(req)
+    except:
+        print "failed to open url: ", url
+        fail_font = pygame.font.SysFont(None, 32)
+        fail_surface = fail_font.render("No ISS Data Available", \
+                                        True, (255,0,0))
+        fail_rect = fail_surface.get_rect()
+        x = background.get_rect().centerx - fail_rect.width/2
+        y = background.get_rect().centery
+        screen.blit(fail_surface, (x,y) )
+
+        return
+        
+    data = response.read()
+
+    # look for TWO LINE MEAN ELEMENT SET in file
+    table = data.split("TWO LINE MEAN ELEMENT SET")[1]
+    line1 = table.splitlines()[3]
+    line2 = table.splitlines()[4]
+    print "ISS TLE line 1:", line1
+    print "ISS TLE line 2:", line2
+
+    iss = ephem.readtle('ISS', \
+                        line1, \
+                        line2)
+
+    # get next 7 passes
+
+
+    y = 38 + 2*16
+    iss_label = font.render( "Pass:", True, (0,255,255))
+    screen.blit(iss_label, (16,y))
+
+    iss_label = font.render( "Rise:", True, (0,255,255))
+    screen.blit(iss_label, (77,y))
+
+    iss_label = font.render( "Set:", True, (0,255,255))
+    screen.blit(iss_label, (212,y))
+    
+
+    y = 38 + 3*16
+    yinc = 16
+
+    for apass in range(0,8):
+        iss.compute(here)
+
+        iss_np = here.next_pass(iss)
+        iss_r = ephem.localtime(iss_np[0])
+        iss_s = ephem.localtime(iss_np[4])
+        print "pass n: iss rise, set:", apass, iss_r, iss_s
+
+        iss_label = font.render( str(apass), True, (255,255,255))
+        screen.blit(iss_label, (36,y))
+        iss_label = font.render( iss_r.strftime('%m/%d %H:%M'), True, (255,255,255))
+        screen.blit(iss_label, (77,y))
+        iss_label = font.render( iss_s.strftime('%H:%M'), True, (255,255,255))
+        screen.blit(iss_label, (212,y))
+        y = y + yinc
+
+        here.date = iss_np[4] + (ephem.minute * 30)
 
 #
 # Change Day
