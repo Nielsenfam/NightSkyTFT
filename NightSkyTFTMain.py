@@ -194,6 +194,8 @@ def dispSky():
 
     dispLocation()
 
+    dispISSNextPass()
+
     dispHourCols()
 
     # if it has been more than a certain # of mins since last refresh do it
@@ -364,7 +366,7 @@ def dispWeather():
     global visibility, weather, icon_url, weather_refresh
     global loc_idx, back_page
 
-    title_txt = "Current Weather"
+    title_txt = "Weather"
     dispTitle(title_txt)
     back_page = "Weather"
 
@@ -424,6 +426,8 @@ def dispWeather():
 
     dispLocation()
 
+    dispISSNextPass()
+    
     data_font_size = 22
     data_font = pygame.font.SysFont(None, data_font_size)
     data_color = (255,255,255)
@@ -794,6 +798,75 @@ def dispISS():
         here.date = iss_np[4] + (ephem.minute * 30)
 
 #
+# Display ISS Next Pass
+#
+def dispISSNextPass():
+
+
+    # local inforamtion parameterized
+    lat = params.lat[loc_idx]
+    lon = params.lon[loc_idx]
+    alt = params.alt[loc_idx]
+    tz = params.tz[loc_idx]
+
+    # setup current location
+    here = ephem.Observer()
+    here.lon = str(lon)
+    here.lat = str(lat)
+    here.elev = alt
+    here.date = ephem.now()
+    # print here 
+
+    url = params.nasa_url
+
+    try:
+        req = urllib2.Request(url)
+    except:
+        print "failed to request url: ", url
+        return
+        
+    try:
+        response = urllib2.urlopen(req)
+    except:
+        print "failed to open url: ", url
+        return
+        
+    data = response.read()
+
+    # look for TWO LINE MEAN ELEMENT SET in file
+    table = data.split("TWO LINE MEAN ELEMENT SET")[1]
+    line1 = table.splitlines()[3]
+    line2 = table.splitlines()[4]
+    # print "ISS TLE line 1:", line1
+    # print "ISS TLE line 2:", line2
+
+    iss = ephem.readtle('ISS', \
+                        line1, \
+                        line2)
+
+    # get next pass
+
+    iss.compute(here)
+
+    iss_np = here.next_pass(iss)
+    iss_r = ephem.localtime(iss_np[0])
+    issLine = iss_r.strftime("%m/%d %H:%M")
+
+    # print "iss_r", iss_r, issLine
+
+    text = font.render("ISS NP:", 0, (0,250,150))
+    textpos = text.get_rect()
+    screen.blit(background, textpos, textpos )
+    screen.blit(text, textpos)
+    
+    text = font.render(issLine, 0, (0,250,150))
+    textpos = text.get_rect()
+
+    screen.blit(background, (0,16), textpos )
+    screen.blit(text, (0,16))
+
+
+#
 # Change Day
 #
 def dispChgDay():
@@ -843,6 +916,8 @@ def dispObjs():
     dispTitle(title_txt)
 
     dispLocation()
+
+    dispISSNextPass()
     
     dispHourCols()
 
@@ -960,30 +1035,59 @@ def dispObjs():
 def dispTime():
 
     now = time.localtime()
-    currentTimeLine = strftime("%H:%M:%S", now)
-    text = font.render(currentTimeLine, 0, (0,250,150))
+    currentTimeLine1 = strftime("%m/%d/%y", now)
+    currentTimeLine2 = strftime("%H:%M:%S", now)
+    
+    text = font.render(currentTimeLine1, 0, (0,250,150))
     textpos = text.get_rect()
     textpos.topright = background.get_rect().topright
     screen.blit(background, textpos, textpos )
     screen.blit(text, textpos)
 
+    text = font.render(currentTimeLine2, 0, (0,250,150))
+    textpos = text.get_rect()
+    textpos.topright = background.get_rect().topright
+    textpos = textpos.move(0,16)
+    screen.blit(background, textpos, textpos )
+    screen.blit(text, textpos)
+
+
 #
 # function to display menu at bottom of screen
 #
 def dispMenu(options):
-    textstr = ""
+
+
+    
+    bg_rect = background.get_rect()
+
     if (options[0] != ""):
-        textstr = textstr + " 1 =" + options[0]
+        textstr = options[0]
+        text = font.render( textstr, True, (255,255,0))
+        text_rect = text.get_rect()
+        x = 40 - text_rect.width /2
+        screen.blit( text, (x,220))
+
     if (options[1] != ""):
-        textstr = textstr + " 2 =" + options[1]
+        textstr = options[1]
+        text = font.render( textstr, True, (255,255,0))
+        text_rect = text.get_rect()
+        x = 120 - text_rect.width /2
+        screen.blit( text, (x,220))
+        
     if (options[2] != ""):
-        textstr = textstr + " 3 =" + options[2]
+        textstr = options[2]
+        text = font.render( textstr, True, (255,255,0))
+        text_rect = text.get_rect()
+        x = 200 - text_rect.width /2
+        screen.blit( text, (x,220))
+        
     if (options[3] != ""):
-        textstr = textstr + " 4 =" + options[3] 
-    text = font.render( textstr, True, (255,255,0))
-    textpos = text.get_rect()
-    textpos.bottomleft = background.get_rect().bottomleft
-    screen.blit( text, textpos)
+        textstr = options[3]
+        text = font.render( textstr, True, (255,255,0))
+        text_rect = text.get_rect()
+        x = 280 - text_rect.width /2        
+        screen.blit( text, (x,220))
 
 #
 # Main routine
@@ -1021,7 +1125,7 @@ def main():
 
     ## Dictionary of pages and the pages that are called from buttons 1-4
     displaydict = { "Main": ["Sky","Objects","Weather","Settings"],
-                    "Objects": ["Sun/Moon","Planets","ISS","Main"],
+                    "Objects": ["Sun/Lun","Planets","ISS","Main"],
                     "Sky": ["ChgDay","SetLoc","Key","Main"],
                     "Weather": ["Forecast","Hourly","SetLoc","Main"],
                     "Quit": ["Yes","No","",""],
@@ -1089,7 +1193,8 @@ def main():
     screen.blit(background,(0,0))
     screen.blit(splash_surface, (x,y) )
 
-    pygame.mouse.set_visible(False)
+    if os.uname()[4][:3] == 'arm' and params.PiTFT == True:
+        pygame.mouse.set_visible(False)
     
     pygame.display.update()
     time.sleep(params.splash_delay)
@@ -1147,12 +1252,16 @@ def main():
                 if ( posy > 180 ):
                    if (posx < 80):
                        buttonpress = 1
+                       time.sleep(0.5)
                    elif (posx < 160):
                        buttonpress = 2
+                       time.sleep(0.5)
                    elif (posx < 240):
                        buttonpress = 3
+                       time.sleep(0.5)
                    else:
                        buttonpress = 4
+                       time.sleep(0.5)
 
 ## if PiTFT
         if os.uname()[4][:3] == 'arm' and params.PiTFT == True:
