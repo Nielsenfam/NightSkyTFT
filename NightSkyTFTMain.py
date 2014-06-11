@@ -1053,6 +1053,9 @@ def main():
     if disp_no:
         print "running under X display"
     else:
+        os.putenv('SDL_MOUSEDRV'   , 'TSLIB')
+        os.putenv('SDL_MOUSEDEV'   , '/dev/input/touchscreen')
+        
         drivers = ['fbcon', 'directfb', 'svgalib']
         found = False
         for driver in drivers:
@@ -1086,6 +1089,8 @@ def main():
     screen.blit(background,(0,0))
     screen.blit(splash_surface, (x,y) )
 
+    pygame.mouse.set_visible(False)
+    
     pygame.display.update()
     time.sleep(params.splash_delay)
 
@@ -1133,6 +1138,21 @@ def main():
                     buttonpress = 3
                 elif event.key == K_4:
                     buttonpress = 4
+
+            if event.type == MOUSEBUTTONDOWN:
+                (posx, posy) = pygame.mouse.get_pos()
+                print "mouse position (x,y)", posx, posy
+
+                # screen size = width, height = 320, 240
+                if ( posy > 180 ):
+                   if (posx < 80):
+                       buttonpress = 1
+                   elif (posx < 160):
+                       buttonpress = 2
+                   elif (posx < 240):
+                       buttonpress = 3
+                   else:
+                       buttonpress = 4
 
 ## if PiTFT
         if os.uname()[4][:3] == 'arm' and params.PiTFT == True:
