@@ -802,57 +802,74 @@ def dispISS():
 #
 def dispISSNextPass():
 
+    global iss_np_risetime
+    
+    if (iss_np_risetime < datetime.datetime.now()):
+    
+        # local inforamtion parameterized
+        lat = params.lat[loc_idx]
+        lon = params.lon[loc_idx]
+        alt = params.alt[loc_idx]
+        tz = params.tz[loc_idx]
 
-    # local inforamtion parameterized
-    lat = params.lat[loc_idx]
-    lon = params.lon[loc_idx]
-    alt = params.alt[loc_idx]
-    tz = params.tz[loc_idx]
+        # setup current location
+        here = ephem.Observer()
+        here.lon = str(lon)
+        here.lat = str(lat)
+        here.elev = alt
+        here.date = ephem.now()
+        # print here 
 
-    # setup current location
-    here = ephem.Observer()
-    here.lon = str(lon)
-    here.lat = str(lat)
-    here.elev = alt
-    here.date = ephem.now()
-    # print here 
+        url = params.nasa_url
 
-    url = params.nasa_url
+        try:
+            req = urllib2.Request(url)
+        except:
+            print "failed to request url: ", url
+            return
+            
+        try:
+            response = urllib2.urlopen(req)
+        except:
+            print "failed to open url: ", url
+            return
+            
+        data = response.read()
 
-    try:
-        req = urllib2.Request(url)
-    except:
-        print "failed to request url: ", url
-        return
-        
-    try:
-        response = urllib2.urlopen(req)
-    except:
-        print "failed to open url: ", url
-        return
-        
-    data = response.read()
+        # look for TWO LINE MEAN ELEMENT SET in file
+        table = data.split("TWO LINE MEAN ELEMENT SET")[1]
+        line1 = table.splitlines()[3]
+        line2 = table.splitlines()[4]
+        # print "ISS TLE line 1:", line1
+        # print "ISS TLE line 2:", line2
 
-    # look for TWO LINE MEAN ELEMENT SET in file
-    table = data.split("TWO LINE MEAN ELEMENT SET")[1]
-    line1 = table.splitlines()[3]
-    line2 = table.splitlines()[4]
-    # print "ISS TLE line 1:", line1
-    # print "ISS TLE line 2:", line2
+        iss = ephem.readtle('ISS', \
+                            line1, \
+                            line2)
 
-    iss = ephem.readtle('ISS', \
-                        line1, \
-                        line2)
+        # get sunset
+        sun = ephem.Sun()
+        sun.compute(here)
+        sun_s = ephem.localtime(here.next_setting(sun))
 
-    # get next pass
 
-    iss.compute(here)
+        pass_visible = False
+        while (pass_visible == False):
+            # get next pass
+            iss.compute(here)
+            iss_np = here.next_pass(iss)
+            iss_np_risetime = ephem.localtime(iss_np[0])
 
-    iss_np = here.next_pass(iss)
-    iss_r = ephem.localtime(iss_np[0])
-    issLine = iss_r.strftime("%m/%d %H:%M")
+            if (iss_np_risetime > sun_s ):
+                pass_visible = True
+                print "this is a visible pass"
+            else:
+                here.date = iss_np[4] + (ephem.minute * 30)
+                print "this is not a vislble pass"
 
-    # print "iss_r", iss_r, issLine
+    issLine = iss_np_risetime.strftime("%m/%d %H:%M")
+
+    # print "iss_r", iss_np_risetime, issLine
 
     text = font.render("ISS NP:", 0, (0,250,150))
     textpos = text.get_rect()
@@ -960,7 +977,7 @@ def dispObjs():
     here.lat = str(lat)
     here.elev = alt
     here.date = eptbasetime
-    print here
+    # print here
 
     # compute objects based upon current location
     sun.compute(here)
@@ -1108,6 +1125,10 @@ def main():
 
     global loc_idx, back_page, displaypage
 
+    global iss_np_risetime
+
+    iss_np_risetime = datetime.datetime.now()
+
     back_page = "Main"
 
     sky_refresh = 0
@@ -1126,22 +1147,22 @@ def main():
     ## Dictionary of pages and the pages that are called from buttons 1-4
     displaydict = { "Main": ["Sky","Objects","Weather","Settings"],
                     "Objects": ["Sun/Lun","Planets","ISS","Main"],
-                    "Sky": ["ChgDay","SetLoc","Key","Main"],
-                    "Weather": ["Forecast","Hourly","SetLoc","Main"],
+                    "Sky": ["Chg Day","Set Loc","Key","Main"],
+                    "Weather": ["Forecast","Hourly","Set Loc","Main"],
                     "Quit": ["Yes","No","",""],
                     "Cycle": ["Yes","No","",""],
-                    "Settings": ["Cycle","SetLoc","Quit","Main"],
+                    "Settings": ["Cycle","Set Loc","Quit","Main"],
                     "ISS": ["","","","Back"],
                     "Forecast": [ "","","","Back"],
                     "Hourly": [ "","","","Back"],
-                    "Sun/Moon": [ "","","","Back"],
+                    "Sun/Lun": [ "","","","Back"],
                     "Planets": [ "","","","Back"],
                     "PowerDown": ["","","","Back"],
-                    "SetLoc": ["Loc 1","Loc 2","Loc 3","Back"],
+                    "Set Loc": ["Loc 1","Loc 2","Loc 3","Back"],
                     "Loc 1": ["","","","Back"],
                     "Loc 2": ["","","","Back"],
                     "Loc 3": ["","","","Back"],
-                    "ChgDay": ["","","","Back"],
+                    "Chg Day": ["","","","Back"],
                     "Key": ["","","","Back"],
                     "Yes":["","","",""],
                     "No":["","","",""]
@@ -1329,7 +1350,7 @@ def main():
                 print ("call ISS")
                 dispISS()
 
-            elif (displaypage == "Sun/Moon"):
+            elif (displaypage == "Sun/Lun"):
                 print ("call Sun/Moon")
                 dispSunMoon()
                                     
@@ -1365,7 +1386,7 @@ def main():
                 print ("call Settings")
                 dispSettings()
 
-            elif (displaypage == "SetLoc"):
+            elif (displaypage == "Set Loc"):
                 print ("call Set Location")
                 dispSetLoc()
 
@@ -1381,7 +1402,7 @@ def main():
                 print ("call Loc 3")
                 dispLoc3()
 
-            elif (displaypage == "ChgDay"):
+            elif (displaypage == "Chg Day"):
                 print ("call Change Day")
                 dispChgDay()
                
