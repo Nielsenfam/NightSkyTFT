@@ -1047,10 +1047,13 @@ def dispHourly():
 #
 def dispObjs():
 
-    global loc_idx
+    global loc_idx, back_page
 
     title_txt = "Objects"
     dispTitle(title_txt)
+
+    back_page = "Objects"
+
 
     dispLocation()
 
