@@ -902,7 +902,7 @@ def dispISS():
     for apass in range(0,8):
         iss.compute(here)
 
-        iss_np = here.nexdispISSt_pass(iss)
+        iss_np = here.nexdisp_pass(iss)
         iss_r = ephem.localtime(iss_np[0])
         iss_s = ephem.localtime(iss_np[4])
         print "pass n: iss rise, set:", apass, iss_r, iss_s
