@@ -902,7 +902,7 @@ def dispISS():
     for apass in range(0,8):
         iss.compute(here)
 
-        iss_np = here.nexdisp_pass(iss)
+        iss_np = here.next_pass(iss)
         iss_r = ephem.localtime(iss_np[0])
         iss_s = ephem.localtime(iss_np[4])
         print "pass n: iss rise, set:", apass, iss_r, iss_s
@@ -1370,7 +1370,7 @@ def main():
         for event in pygame.event.get():
             if event.type == QUIT:
                 pygame.quit()
-		exit()
+                exit()
             if event.type == KEYDOWN:
                 
                 if event.key == K_q:
