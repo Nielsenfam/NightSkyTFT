@@ -530,14 +530,134 @@ def dispPlanets():
     title_txt = "Planets"
     dispTitle(title_txt)
 
+    # local inforamtion parameterized
+    lat = params.lat[loc_idx]
+    lon = params.lon[loc_idx]
+    alt = params.alt[loc_idx]
+    tz = params.tz[loc_idx]
+
+    # use time of 5AM today for all calculations so that it always gets next rise and set times for this evening
+
+    mytz = pytz.timezone(tz)
+    eptz = pytz.timezone('utc')
+
+    now = datetime.date.today()
+    basetime = mytz.localize( datetime.datetime(now.year,now.month,now.day)+ datetime.timedelta(hours=5))
+    eptbasetime = basetime.astimezone(eptz)
+    # print "eptbasetime", eptabasetime
+
+    # define planets
+    mercury = ephem.Mercury()
+    venus = ephem.Venus()
+    mars = ephem.Mars()
+    jupiter = ephem.Jupiter()
+    saturn = ephem.Saturn()
+    uranus = ephem.Uranus()
+    neptune = ephem.Neptune()
+
+    # setup current location
+    here = ephem.Observer()
+    here.lon = str(lon)
+    here.lat = str(lat)
+    here.elev = alt
+    here.date = eptbasetime
+    # print here
+
+    # compute objects based upon current location
+    mercury.compute(here)
+    venus.compute(here)
+    mars.compute(here)
+    jupiter.compute(here)
+    saturn.compute(here)
+    uranus.compute(here)
+    neptune.compute(here)
+
+    mercury_const = ephem.constellation(mercury)[1]
+    venus_const = ephem.constellation(venus)[1]
+    mars_const = ephem.constellation(mars)[1]
+    jupiter_const = ephem.constellation(jupiter)[1]
+    saturn_const = ephem.constellation(saturn)[1]
+    uranus_const = ephem.constellation(uranus)[1]
+    neptune_const = ephem.constellation(neptune)[1]
+
+    print "mercury const:", mercury_const
+    print "venus const:", venus_const
+    print "mars const:", mars_const
+    print "jupiter const:", jupiter_const
+    print "saturn const:", saturn_const
+    print "uranus const:", uranus_const
+    print "neptune const:", neptune_const
+
+
+    xcol1 = 16
+    xcol2 = 120
+    y = 38 + 16
+    
+    planet_label = font.render( "Planet:", True, (0,255,255))
+    screen.blit(planet_label, (xcol1,y))
+
+    planet_label = font.render( "Constellation:", True, (0,255,255))
+    screen.blit(planet_label, (xcol2,y))
+
+    y = 38 + 2*16
+    yinc = 16
+
+    planet_label = font.render( "Mercury", True, (255,255,255))
+    screen.blit(planet_label, (xcol1,y))
+    planet_label = font.render( mercury_const, True, (255,255,255))
+    screen.blit(planet_label, (xcol2,y))
+
+    y = y + yinc
+
+    planet_label = font.render( "Venus", True, (255,255,255))
+    screen.blit(planet_label, (xcol1,y))
+    planet_label = font.render( venus_const, True, (255,255,255))
+    screen.blit(planet_label, (xcol2,y))
+
+    y = y + yinc
+
+    planet_label = font.render( "Mars", True, (255,255,255))
+    screen.blit(planet_label, (xcol1,y))
+    planet_label = font.render( mars_const, True, (255,255,255))
+    screen.blit(planet_label, (xcol2,y))
+
+    y = y + yinc
+    
+    planet_label = font.render( "Jupiter", True, (255,255,255))
+    screen.blit(planet_label, (xcol1,y))
+    planet_label = font.render( jupiter_const, True, (255,255,255))
+    screen.blit(planet_label, (xcol2,y))
+  
+    y = y + yinc
+    
+    planet_label = font.render( "Saturn", True, (255,255,255))
+    screen.blit(planet_label, (xcol1,y))
+    planet_label = font.render( saturn_const, True, (255,255,255))
+    screen.blit(planet_label, (xcol2,y))
+
+    y = y + yinc
+
+    planet_label = font.render( "Uranus", True, (255,255,255))
+    screen.blit(planet_label, (xcol1,y))
+    planet_label = font.render( uranus_const, True, (255,255,255))
+    screen.blit(planet_label, (xcol2,y))
+
+    y = y + yinc
+
+    planet_label = font.render( "Neptune", True, (255,255,255))
+    screen.blit(planet_label, (xcol1,y))
+    planet_label = font.render( neptune_const, True, (255,255,255))
+    screen.blit(planet_label, (xcol2,y))
+
+
     # explain that it is not implemented
-    details_font = pygame.font.SysFont(None, 32)
-    details_surface = details_font.render("Not Implemented", \
-                                        True, (255,0,0))
-    details_rect = details_surface.get_rect()
-    x = background.get_rect().centerx - details_rect.width/2
-    y = background.get_rect().centery
-    screen.blit(details_surface, (x,y) )
+##    details_font = pygame.font.SysFont(None, 32)
+##    details_surface = details_font.render("Not Implemented", \
+##                                        True, (255,0,0))
+##    details_rect = details_surface.get_rect()
+##    x = background.get_rect().centerx - details_rect.width/2
+##    y = background.get_rect().centery
+##    screen.blit(details_surface, (x,y) )
 
 #
 # Display Settings
@@ -782,7 +902,7 @@ def dispISS():
     for apass in range(0,8):
         iss.compute(here)
 
-        iss_np = here.next_pass(iss)
+        iss_np = here.nexdispISSt_pass(iss)
         iss_r = ephem.localtime(iss_np[0])
         iss_s = ephem.localtime(iss_np[4])
         print "pass n: iss rise, set:", apass, iss_r, iss_s
