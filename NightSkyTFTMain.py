@@ -795,14 +795,93 @@ def dispForecast():
     title_txt = "Forecast"
     dispTitle(title_txt)
 
-    # explain that it is not implemented
-    details_font = pygame.font.SysFont(None, 32)
-    details_surface = details_font.render("Not Implemented", \
+    dispLocation()
+
+
+    url = params.wug_url_base + params.wug_key + \
+                        "/forecast" + params.wug_location[loc_idx]
+    try:
+        f = urllib2.urlopen(url)
+    except:
+        print "failed to request url: ", url
+        fail_font = pygame.font.SysFont(None, 32)
+        fail_surface = fail_font.render("No Forecast Data Available", \
                                         True, (255,0,0))
-    details_rect = details_surface.get_rect()
-    x = background.get_rect().centerx - details_rect.width/2
-    y = background.get_rect().centery
-    screen.blit(details_surface, (x,y) )
+        fail_rect = fail_surface.get_rect()
+        x = background.get_rect().centerx - fail_rect.width/2
+        y = background.get_rect().centery
+        screen.blit(fail_surface, (x,y) )
+        return
+
+    json_string = f.read()
+    parsed_json = json.loads(json_string)
+
+    if 'forecast' in parsed_json:
+        forecast = parsed_json['forecast']
+    else:
+        print "no forecast data at url: ", url
+        fail_font = pygame.font.SysFont(None, 32)
+        fail_surface = fail_font.render("No Forecast Data Available", \
+                                        True, (255,0,0))
+        fail_rect = fail_surface.get_rect()
+        x = background.get_rect().centerx - fail_rect.width/2
+        y = background.get_rect().centery
+        screen.blit(fail_surface, (x,y) )
+        return   
+
+    print "forecast:"
+
+
+    for i in range(0,4):
+        print forecast['simpleforecast']['forecastday'][i]['date']['weekday_short']
+        print forecast['simpleforecast']['forecastday'][i]['date']['month'], "/"
+        print forecast['simpleforecast']['forecastday'][i]['date']['day']
+        print forecast['simpleforecast']['forecastday'][i]['conditions']
+        print "high:",forecast['simpleforecast']['forecastday'][i]['high']['fahrenheit']
+        print "low:", forecast['simpleforecast']['forecastday'][i]['low']['fahrenheit']
+
+
+    col1x = 16
+    col2x = 64
+    col3x = 160
+    col4x = 230
+
+    yinc = 16
+    y = 38 + 2 * yinc
+    details_label = font.render( "Day:", True, (0,255,255))
+    screen.blit(details_label, (col1x,y))
+
+    details_label = font.render( "Conditions:", True, (0,255,255))
+    screen.blit(details_label, (col2x,y))
+
+    details_label = font.render( "Low:", True, (0,255,255))
+    screen.blit(details_label, (col3x,y))
+
+    details_label = font.render( "High:", True, (0,255,255))
+    screen.blit(details_label, (col4x,y))
+
+    y = y + yinc/2
+    for i in range(0,4):
+
+        y = y + yinc
+        text = forecast['simpleforecast']['forecastday'][i]['date']['weekday_short']
+        details_label = font.render( text, True, (255,255,255))
+        screen.blit(details_label, (col1x,y))
+
+        text = forecast['simpleforecast']['forecastday'][i]['conditions']
+        details_label = font.render( text, True, (255,255,255))
+        screen.blit(details_label, (col2x,y))
+
+        y = y + yinc
+        text = forecast['simpleforecast']['forecastday'][i]['low']['fahrenheit']
+        details_label = font.render( text, True, (255,255,255))
+        screen.blit(details_label, (col3x,y))
+
+        text = forecast['simpleforecast']['forecastday'][i]['high']['fahrenheit']
+        details_label = font.render( text, True, (255,255,255))
+        screen.blit(details_label, (col4x,y))
+        y = y + yinc/4
+
 
 #
 # Display ISS
@@ -923,7 +1002,7 @@ def dispISS():
 def dispISSNextPass():
 
     global iss_np_risetime
-    
+
     if (iss_np_risetime < datetime.datetime.now()):
     
         # local inforamtion parameterized
@@ -932,12 +1011,20 @@ def dispISSNextPass():
         alt = params.alt[loc_idx]
         tz = params.tz[loc_idx]
 
+        mytz = pytz.timezone(tz)
+        eptz = pytz.timezone('utc')
+
+        now = datetime.date.today()
+        basetime = mytz.localize( datetime.datetime(now.year,now.month,now.day)+ datetime.timedelta(hours=5))
+        eptbasetime = basetime.astimezone(eptz)
+        
+
         # setup current location
         here = ephem.Observer()
         here.lon = str(lon)
         here.lat = str(lat)
         here.elev = alt
-        here.date = ephem.now()
+        here.date = eptbasetime
         # print here 
 
         url = params.nasa_url
@@ -981,11 +1068,15 @@ def dispISSNextPass():
             iss_np_risetime = ephem.localtime(iss_np[0])
 
             if (iss_np_risetime > sun_s ):
-                pass_visible = True
-                print "this is a visible pass"
+                if (iss_np_risetime > datetime.datetime.now()):
+                    pass_visible = True
+                    # print "this is a visible pass"
+                else:
+                    here.date = iss_np[4] + (ephem.minute * 30)
+                    # print "this is vislble but in the past"              
             else:
                 here.date = iss_np[4] + (ephem.minute * 30)
-                print "this is not a vislble pass"
+                # print "this is not a vislble pass"
 
     issLine = iss_np_risetime.strftime("%m/%d %H:%M")
 

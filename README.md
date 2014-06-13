@@ -294,3 +294,12 @@ sudo chmod +x nightskyboot
 sudo cp nightskyboot /etc/init.d/
 sudo update-rc.d nightskyboot defaults
 ```
+
+## 22. Setup shutdown feature for GPIO button 
+
+Pin 23 is the corner button, the top right when buttons are on top
+
+Add rpi_power_switch to /etc/modules and save
+
+Add this to the modprobe.d file
+options rpi_power_switch gpio_pin=23 mode=0 
