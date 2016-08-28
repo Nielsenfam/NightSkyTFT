@@ -1,6 +1,6 @@
 #
 # Parameter file for Night Sky TFT
-#   Edit parameters to match location
+#   Edit parameters to match location  
 #
 loc_names = [ "Pelican Lake","Minneapolis","Flagstaff" ]
 
@@ -90,8 +90,8 @@ splash_delay = 5
 # Set to True to start cycling on startup
 start_cycling = True
 
-# Startup page (can be "Menu", "Objs", "Weather", "Sky", or "Details") 
-start_page = "Objs"
+# Startup page (can be "Menu", "Objects", "Weather", "Sky", or "Details") 
+start_page = "Objects"
 
 #  Weather underground URL info
 #
