@@ -64,7 +64,7 @@ wug_location[2] = "/q/AZ/Flagstaff.json"
 
 #
 # key for weather underground access
-#
+# 
 # wug_key = "*"
 wug_key = "*"
 
